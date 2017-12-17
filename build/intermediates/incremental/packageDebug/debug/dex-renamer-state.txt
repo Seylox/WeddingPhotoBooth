@@ -1,0 +1,4 @@
+#Sun Dec 17 21:24:47 CET 2017
+base.0=/Users/berndkampl/SourceCode/Private/SonyCamera/CameraRemoteSampleApp/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex

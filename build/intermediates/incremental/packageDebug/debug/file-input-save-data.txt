@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Sun Dec 17 21:24:47 CET 2017
+0.baseType=DIRECTORY
+0.base=/Users/berndkampl/SourceCode/Private/SonyCamera/CameraRemoteSampleApp/build/intermediates/transforms/dexMerger/debug/0
+0.path=classes.dex
+0.set=DEX
+count=1
