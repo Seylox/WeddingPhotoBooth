@@ -9,6 +9,7 @@ import com.example.sony.cameraremote.ServerDevice.ApiService;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -39,6 +40,9 @@ public class DeviceDiscoveryActivity extends Activity {
 
     private boolean mActivityActive;
 
+    private Button mCameraWifiButton;
+    private Button mPrinterWifiButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,8 @@ public class DeviceDiscoveryActivity extends Activity {
         mListAdapter = new DeviceListAdapter(this);
 
         Log.d(TAG, "onCreate() completed.");
+        mCameraWifiButton = (Button) findViewById(R.id.camera_wifi_button);
+        mPrinterWifiButton = (Button) findViewById(R.id.printer_wifi_button);
     }
 
     @Override
@@ -232,5 +238,23 @@ public class DeviceDiscoveryActivity extends Activity {
 
             return textView;
         }
+    }
+
+    public void onClickCameraWifiButton(View view) {
+        String networkSSID = "DIRECT-KIE0-ILCE-5000";
+        String networkPass = "N3sN7rTv";
+
+        WifiConfiguration conf = new WifiConfiguration();
+        conf.SSID = "\"" + networkSSID + "\"";   // Please note the quotes. String should contain ssid in quotes
+        conf.preSharedKey = "\""+ networkPass +"\"";
+    }
+
+    public void onClickPrinterWifiButton(View view) {
+        String networkSSID = "3WebCube6134";
+        String networkPass = "supergine";
+
+        WifiConfiguration conf = new WifiConfiguration();
+        conf.SSID = "\"" + networkSSID + "\"";   // Please note the quotes. String should contain ssid in quotes
+        conf.preSharedKey = "\""+ networkPass +"\"";
     }
 }

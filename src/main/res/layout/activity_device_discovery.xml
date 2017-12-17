@@ -13,6 +13,30 @@
         android:layout_marginTop="10dp"
         android:text="@string/msg_search_devices" />
 
+    <LinearLayout
+        android:id="@+id/wifi_switch_linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:padding="2dp"
+        >
+        <Button
+            android:id="@+id/camera_wifi_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CameraWiFi"
+            android:onClick="onClickCameraWifiButton"
+            />
+        <Button
+            android:id="@+id/printer_wifi_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PrinterWiFi"
+            android:onClick="onClickPrinterWifiButton"
+            />
+    </LinearLayout>
+
     <Button
         android:id="@+id/button_search"
         android:layout_width="wrap_content"
