@@ -8,6 +8,8 @@ import android.app.Application;
 
 import java.util.Set;
 
+import timber.log.Timber;
+
 /**
  * Application class for the sample application.
  */
@@ -20,6 +22,12 @@ public class SampleApplication extends Application {
     private SimpleCameraEventObserver mEventObserver;
 
     private Set<String> mSupportedApiSet;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Timber.plant(new Timber.DebugTree());
+    }
 
     /**
      * Sets a target ServerDevice object.
