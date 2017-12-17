@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * An Activity class of Device Discovery screen.
@@ -241,12 +244,30 @@ public class DeviceDiscoveryActivity extends Activity {
     }
 
     public void onClickCameraWifiButton(View view) {
-        String networkSSID = "DIRECT-KIE0-ILCE-5000";
+        String networkSSID = "DIRECT-KIE0:ILCE-5000";
         String networkPass = "N3sN7rTv";
 
         WifiConfiguration conf = new WifiConfiguration();
-        conf.SSID = "\"" + networkSSID + "\"";   // Please note the quotes. String should contain ssid in quotes
+        conf.SSID = "\"" + networkSSID + "\"";
         conf.preSharedKey = "\""+ networkPass +"\"";
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            Timber.d("--- CameraWiFi: wifiManager != null");
+            wifiManager.addNetwork(conf);
+        }
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        for( WifiConfiguration i : list ) {
+            if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
+                Timber.d("--- CameraWiFi: connecting to WiFi!");
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(i.networkId, true);
+                wifiManager.reconnect();
+
+                break;
+            }
+        }
     }
 
     public void onClickPrinterWifiButton(View view) {
@@ -254,7 +275,25 @@ public class DeviceDiscoveryActivity extends Activity {
         String networkPass = "supergine";
 
         WifiConfiguration conf = new WifiConfiguration();
-        conf.SSID = "\"" + networkSSID + "\"";   // Please note the quotes. String should contain ssid in quotes
+        conf.SSID = "\"" + networkSSID + "\"";
         conf.preSharedKey = "\""+ networkPass +"\"";
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            Timber.d("--- PrinterWiFi: wifiManager != null");
+            wifiManager.addNetwork(conf);
+        }
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        for( WifiConfiguration i : list ) {
+            if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
+                Timber.d("--- PrinterWiFi: connecting to WiFi!");
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(i.networkId, true);
+                wifiManager.reconnect();
+
+                break;
+            }
+        }
     }
 }
