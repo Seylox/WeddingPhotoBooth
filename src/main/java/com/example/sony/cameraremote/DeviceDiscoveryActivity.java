@@ -9,10 +9,15 @@ import com.example.sony.cameraremote.ServerDevice.ApiService;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +51,9 @@ public class DeviceDiscoveryActivity extends Activity {
     private Button mCameraWifiButton;
     private Button mPrinterWifiButton;
 
+    private boolean mCheckWifiConnection = false;
+    private String mShouldConnectToWifi = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +67,7 @@ public class DeviceDiscoveryActivity extends Activity {
         Log.d(TAG, "onCreate() completed.");
         mCameraWifiButton = (Button) findViewById(R.id.camera_wifi_button);
         mPrinterWifiButton = (Button) findViewById(R.id.printer_wifi_button);
+        runPeriodicWifiTask();
     }
 
     @Override
@@ -251,16 +260,20 @@ public class DeviceDiscoveryActivity extends Activity {
         conf.SSID = "\"" + networkSSID + "\"";
         conf.preSharedKey = "\""+ networkPass +"\"";
 
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager)
+                getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
-            Timber.d("--- CameraWiFi: wifiManager != null");
             wifiManager.addNetwork(conf);
         }
+
+        mCheckWifiConnection = true;
+        runPeriodicWifiTask();
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for( WifiConfiguration i : list ) {
             if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
-                Timber.d("--- CameraWiFi: connecting to WiFi!");
+                Timber.d("--- CameraWiFi: connecting to WiFi! " + networkSSID);
+                mShouldConnectToWifi = "\"" + networkSSID + "\"";
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
                 wifiManager.reconnect();
@@ -268,6 +281,9 @@ public class DeviceDiscoveryActivity extends Activity {
                 break;
             }
         }
+
+        // TODO: check which WiFi I'm connected to after pressing the button and successfully
+        // connecting to a wifi - might not be the correct one
     }
 
     public void onClickPrinterWifiButton(View view) {
@@ -278,16 +294,20 @@ public class DeviceDiscoveryActivity extends Activity {
         conf.SSID = "\"" + networkSSID + "\"";
         conf.preSharedKey = "\""+ networkPass +"\"";
 
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager)
+                getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
-            Timber.d("--- PrinterWiFi: wifiManager != null");
             wifiManager.addNetwork(conf);
         }
+
+        mCheckWifiConnection = true;
+        runPeriodicWifiTask();
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for( WifiConfiguration i : list ) {
             if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
-                Timber.d("--- PrinterWiFi: connecting to WiFi!");
+                Timber.d("--- PrinterWiFi: connecting to WiFi! " + networkSSID);
+                mShouldConnectToWifi = "\"" + networkSSID + "\"";
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
                 wifiManager.reconnect();
@@ -295,5 +315,37 @@ public class DeviceDiscoveryActivity extends Activity {
                 break;
             }
         }
+
+        // TODO: check which WiFi I'm connected to after pressing the button and successfully
+        // connecting to a wifi - might not be the correct one
+    }
+
+    private void runPeriodicWifiTask() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ConnectivityManager connectivityManager = (ConnectivityManager)
+                        getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager
+                        .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                if (networkInfo.isConnected()) {
+                    WifiManager wifiManager = (WifiManager) getApplicationContext()
+                            .getSystemService(Context.WIFI_SERVICE);
+                    WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                    if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
+                        Timber.d("--- Connected to: " + connectionInfo.getSSID() +
+                                ", should connect to: " + mShouldConnectToWifi);
+                        if (mShouldConnectToWifi.equals(connectionInfo.getSSID())) {
+                            mCheckWifiConnection = false;
+                        }
+                    }
+                }
+                // TODO this keeps running even when the app shuts down, so shut down this task too.
+                if (mCheckWifiConnection) {
+                    runPeriodicWifiTask();
+                }
+            }
+        },200);
     }
 }
