@@ -338,6 +338,12 @@ public class DeviceDiscoveryActivity extends Activity {
                                 ", should connect to: " + mShouldConnectToWifi);
                         if (mShouldConnectToWifi.equals(connectionInfo.getSSID())) {
                             mCheckWifiConnection = false;
+
+                            if (connectionInfo.getSSID().equals("\"DIRECT-KIE0:ILCE-5000\"")) {
+                                if (!mSsdpClient.isSearching()) {
+                                    searchDevices();
+                                }
+                            }
                         }
                     }
                 }
