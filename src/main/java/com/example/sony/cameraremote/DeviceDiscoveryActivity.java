@@ -39,7 +39,8 @@ import timber.log.Timber;
  * An Activity class of Device Discovery screen.
  */
 public class DeviceDiscoveryActivity extends Activity {
-
+    //==============================================================================================
+    //region MemberVariables
     private static final String TAG = DeviceDiscoveryActivity.class.getSimpleName();
 
     private SimpleSsdpClient mSsdpClient;
@@ -53,7 +54,11 @@ public class DeviceDiscoveryActivity extends Activity {
 
     private boolean mCheckWifiConnection = false;
     private String mShouldConnectToWifi = "";
+    //endregion MemberVariables
+    //==============================================================================================
 
+    //==============================================================================================
+    //region ActivityMethods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +116,11 @@ public class DeviceDiscoveryActivity extends Activity {
 
         Log.d(TAG, "onPause() completed.");
     }
+    //endregion ActivityMethods
+    //==============================================================================================
 
+    //==============================================================================================
+    //region SearchDevices
     /**
      * Start searching supported devices.
      */
@@ -127,6 +136,7 @@ public class DeviceDiscoveryActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        // TODO: launch other activity upon finding device!
                         mListAdapter.addDevice(device);
                     }
                 });
@@ -169,7 +179,11 @@ public class DeviceDiscoveryActivity extends Activity {
             }
         });
     }
+    //endregion SearchDevices
+    //==============================================================================================
 
+    //==============================================================================================
+    //region LaunchActivity
     /**
      * Launch a SampleCameraActivity.
      * 
@@ -186,7 +200,11 @@ public class DeviceDiscoveryActivity extends Activity {
         Intent intent = new Intent(this, SampleCameraActivity.class);
         startActivity(intent);
     }
+    //endregion LaunchActivity
+    //==============================================================================================
 
+    //==============================================================================================
+    //region ListAdapter
     /**
      * Adapter class for DeviceList
      */
@@ -251,7 +269,11 @@ public class DeviceDiscoveryActivity extends Activity {
             return textView;
         }
     }
+    //endregion ListAdapter
+    //==============================================================================================
 
+    //==============================================================================================
+    //region Buttons
     public void onClickCameraWifiButton(View view) {
         String networkSSID = "DIRECT-KIE0:ILCE-5000";
         String networkPass = "N3sN7rTv";
@@ -319,7 +341,11 @@ public class DeviceDiscoveryActivity extends Activity {
         // TODO: check which WiFi I'm connected to after pressing the button and successfully
         // connecting to a wifi - might not be the correct one
     }
+    //endregion Buttons
+    //==============================================================================================
 
+    //==============================================================================================
+    //region Tasks
     private void runPeriodicWifiTask() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -354,4 +380,6 @@ public class DeviceDiscoveryActivity extends Activity {
             }
         },200);
     }
+    //endregion Tasks
+    //==============================================================================================
 }
