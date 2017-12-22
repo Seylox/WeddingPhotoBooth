@@ -136,8 +136,9 @@ public class DeviceDiscoveryActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // TODO: launch other activity upon finding device!
                         mListAdapter.addDevice(device);
+                        // TODO: launch other activity upon finding device!
+                        launchSampleActivity(device);
                     }
                 });
             }
