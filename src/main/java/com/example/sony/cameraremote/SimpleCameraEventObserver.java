@@ -211,6 +211,9 @@ public class SimpleCameraEventObserver {
                                 // Pass through.
                                 break;
                             case 1: // "Any" error
+                                // do not stop monitoring then, since this could apparently
+                                // appear unexpectedly. bernd
+                                continue MONITORLOOP;
                             case 12: // "No such method" error
                                 fireResponseErrorListener();
                                 break MONITORLOOP; // end monitoring.
