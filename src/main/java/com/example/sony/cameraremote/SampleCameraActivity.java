@@ -15,7 +15,9 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import timber.log.Timber;
+
 /**
  * An Activity class of Sample Camera screen.
  */
@@ -57,6 +61,10 @@ public class SampleCameraActivity extends Activity {
     private Button mButtonZoomOut;
 
     private Button mButtonContentsListMode;
+
+    private Button mOpenLastButton;
+
+    private String mOpenLastUrl;
 
     private TextView mTextCameraStatus;
 
@@ -94,6 +102,19 @@ public class SampleCameraActivity extends Activity {
         mButtonZoomOut = (Button) findViewById(R.id.button_zoom_out);
         mButtonContentsListMode = (Button) findViewById(R.id.button_contents_list);
         mTextCameraStatus = (TextView) findViewById(R.id.text_camera_status);
+        mOpenLastButton = findViewById(R.id.open_last_button);
+
+        mOpenLastButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(mOpenLastUrl)) {
+                    Timber.d("--- clicked mOpenLastUrl: " + mOpenLastUrl);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(mOpenLastUrl));
+                    startActivity(intent);
+                }
+            }
+        });
 
         mSpinnerShootMode.setEnabled(false);
 
@@ -307,6 +328,7 @@ public class SampleCameraActivity extends Activity {
                     // Get supported API list (Camera API)
                     JSONObject replyJsonCamera = mRemoteApi.getCameraMethodTypes();
                     loadSupportedApiList(replyJsonCamera);
+                    Timber.d("--- " + replyJsonCamera);
 
                     try {
                         // Get supported API list (AvContent API)
@@ -915,6 +937,8 @@ public class SampleCameraActivity extends Activity {
                     DisplayHelper.setProgressIndicator(SampleCameraActivity.this, true);
 
                     URL url = new URL(postImageUrl);
+                    mOpenLastUrl = postImageUrl;
+                    Timber.d("--- takeAndFetchPicture mOpenLastUrl: " + mOpenLastUrl + " and " + url);
                     InputStream istream = new BufferedInputStream(url.openStream());
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4; // irresponsible value

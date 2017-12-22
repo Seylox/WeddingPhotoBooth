@@ -50,6 +50,15 @@
             android:enabled="false"
             android:text="@string/button_contents_list"
             android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <Button
+            android:id="@+id/open_last_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Open Last"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
     </LinearLayout>
 
     <LinearLayout
