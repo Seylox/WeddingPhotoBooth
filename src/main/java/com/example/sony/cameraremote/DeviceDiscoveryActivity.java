@@ -289,7 +289,7 @@ public class DeviceDiscoveryActivity extends Activity {
         }
 
         mCheckWifiConnection = true;
-        runPeriodicWifiTask();
+//        runPeriodicWifiTask();
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for( WifiConfiguration i : list ) {
@@ -323,7 +323,7 @@ public class DeviceDiscoveryActivity extends Activity {
         }
 
         mCheckWifiConnection = true;
-        runPeriodicWifiTask();
+//        runPeriodicWifiTask();
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for( WifiConfiguration i : list ) {
