@@ -392,6 +392,45 @@ public class SimpleRemoteApi {
     }
 
     /**
+     * Calls *params* API to the target server. Request JSON data is such
+     * like as below.
+     *
+     * <pre>
+     * {
+     *   "method": "@params",
+     *   "id": 1,
+     *   "params": [ ],
+     *   "version": "1.0"
+     * }
+     * </pre>
+     *
+     * @return JSON data of response
+     * @throws IOException
+     */
+    public JSONObject callParamsApi(String params) throws IOException {
+        // TODO
+        String service = "camera";
+        try {
+            JSONObject requestJson =
+                    new JSONObject()
+                            .put("method", params)
+                            .put("params", new JSONArray())
+                            .put("id", id())
+                            .put("version", "1.0");
+            Timber.d("--- callParamsApi RequestJson: " + requestJson);
+            String url = findActionListUrl(service) + "/" + service;
+
+            log("Request:  " + requestJson.toString());
+            String responseJson = SimpleHttpClient.httpPost(url, requestJson.toString());
+            log("Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+
+    /**
      * Calls setPostviewImageSize API to the target server. Request JSON data is such
      * like as below.
      *
@@ -408,13 +447,12 @@ public class SimpleRemoteApi {
      * @throws IOException
      */
     public JSONObject setPostviewImageSize(String params) throws IOException {
-        // TODO
         String service = "camera";
         try {
             JSONObject requestJson =
                     new JSONObject()
                             .put("method", "setPostviewImageSize")
-                            .put("params", new JSONArray().put(params)) //
+                            .put("params", new JSONArray().put(params))
                             .put("id", id())
                             .put("version", "1.0");
             Timber.d("--- setPostviewImageSize RequestJson: " + requestJson);
