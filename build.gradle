@@ -28,4 +28,5 @@ android {
 
 dependencies {
     implementation 'com.jakewharton.timber:timber:4.6.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }

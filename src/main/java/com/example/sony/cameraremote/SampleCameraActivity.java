@@ -5,6 +5,8 @@
 package com.example.sony.cameraremote;
 
 import com.example.sony.cameraremote.utils.DisplayHelper;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,11 +14,13 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,6 +35,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -66,6 +72,8 @@ public class SampleCameraActivity extends Activity {
 
     private String mOpenLastUrl;
 
+    private String mLastTakenPhotoName;
+
     private TextView mTextCameraStatus;
 
     private ServerDevice mTargetServer;
@@ -83,6 +91,8 @@ public class SampleCameraActivity extends Activity {
     private final Set<String> mSupportedApiSet = new HashSet<String>();
 
     private String mPostviewImageSize = "";
+
+    private int mCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -318,8 +328,6 @@ public class SampleCameraActivity extends Activity {
     }
 
     public void onClickSwitchpostviewimagesize(View view) {
-        // TODO
-
         new Thread() {
             @Override
             public void run() {
@@ -346,7 +354,73 @@ public class SampleCameraActivity extends Activity {
                 }
             }
         }.start();
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    String params = "";
+//                    if (mCounter == 0) {
+//                        params = "getStillSize";
+//                        mCounter++;
+//                    } else if (mCounter == 1) {
+//                        params = "getSupportedStillSize";
+//                        mCounter++;
+//                    } else if (mCounter == 2) {
+//                        params = "getAvailableStillSize";
+//                        mCounter = 0;
+//                    }
+//                    JSONObject replyJson = mRemoteApi.callParamsApi(params);
+//                    JSONArray resultsObj = replyJson.getJSONArray("result");
+//                    Timber.d("--- callParams response: " + replyJson);
+//
+//                } catch (IOException e) {
+//                    Log.w(TAG, "IOException while closing slicer: " + e.getMessage());
+//                    DisplayHelper.toast(getApplicationContext(), //
+//                            R.string.msg_error_api_calling);
+//                } catch (JSONException e) {
+//                    Log.w(TAG, "JSONException while closing slicer");
+//                    DisplayHelper.toast(getApplicationContext(), //
+//                            R.string.msg_error_api_calling);
+//                } finally {
+//                    DisplayHelper.setProgressIndicator(SampleCameraActivity.this, false);
+//                }
+//            }
+//        }.start();
     }
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    File file = new File(
+                            getApplicationContext()
+                                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                    .getPath()
+                                    + "/" + mLastTakenPhotoName);
+                    Timber.d("--- target file: " + file.getPath());
+                    try {
+                        file.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                        ostream.close();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {}
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+    };
 
     private void prepareOpenConnection() {
         Log.d(TAG, "prepareToOpenConection() exec");
@@ -972,6 +1046,11 @@ public class SampleCameraActivity extends Activity {
                     URL url = new URL(postImageUrl);
                     mOpenLastUrl = postImageUrl;
                     Timber.d("--- takeAndFetchPicture mOpenLastUrl: " + mOpenLastUrl + " and " + url);
+
+                    String path = url.getPath();
+                    mLastTakenPhotoName = path.substring(path.lastIndexOf('/') + 1);
+                    Timber.d("--- takeAndFetchPicture mLastTakenPhotoName: " + mLastTakenPhotoName);
+
                     InputStream istream = new BufferedInputStream(url.openStream());
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4; // irresponsible value
@@ -985,6 +1064,8 @@ public class SampleCameraActivity extends Activity {
                         public void run() {
                             mImagePictureWipe.setVisibility(View.VISIBLE);
                             mImagePictureWipe.setImageDrawable(pictureDrawable);
+
+                            Picasso.with(SampleCameraActivity.this).load(mOpenLastUrl).into(target);
                         }
                     });
 
