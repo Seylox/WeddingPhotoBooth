@@ -16,6 +16,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Simple Camera Remote API wrapper class. (JSON based API <--> Java API)
  */
@@ -390,9 +392,47 @@ public class SimpleRemoteApi {
     }
 
     /**
+     * Calls setPostviewImageSize API to the target server. Request JSON data is such
+     * like as below.
+     *
+     * <pre>
+     * {
+     *   "method": "setPostviewImageSize",
+     *   "id": 1,
+     *   "params": [ "@params" ],
+     *   "version": "1.0"
+     * }
+     * </pre>
+     *
+     * @return JSON data of response
+     * @throws IOException
+     */
+    public JSONObject setPostviewImageSize(String params) throws IOException {
+        // TODO
+        String service = "camera";
+        try {
+            JSONObject requestJson =
+                    new JSONObject()
+                            .put("method", "setPostviewImageSize")
+                            .put("params", new JSONArray().put(params)) //
+                            .put("id", id())
+                            .put("version", "1.0");
+            Timber.d("--- setPostviewImageSize RequestJson: " + requestJson);
+            String url = findActionListUrl(service) + "/" + service;
+
+            log("Request:  " + requestJson.toString());
+            String responseJson = SimpleHttpClient.httpPost(url, requestJson.toString());
+            log("Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
      * Calls actTakePicture API to the target server. Request JSON data is such
      * like as below.
-     * 
+     *
      * <pre>
      * {
      *   "method": "actTakePicture",
@@ -401,7 +441,7 @@ public class SimpleRemoteApi {
      *   "version": "1.0"
      * }
      * </pre>
-     * 
+     *
      * @return JSON data of response
      * @throws IOException
      */
@@ -409,8 +449,12 @@ public class SimpleRemoteApi {
         String service = "camera";
         try {
             JSONObject requestJson =
-                    new JSONObject().put("method", "actTakePicture").put("params", new JSONArray()) //
-                            .put("id", id()).put("version", "1.0");
+                    new JSONObject()
+                            .put("method", "actTakePicture")
+                            .put("params", new JSONArray()) //
+                            .put("id", id())
+                            .put("version", "1.0");
+            Timber.d("--- actTakePicture RequestJson: " + requestJson);
             String url = findActionListUrl(service) + "/" + service;
 
             log("Request:  " + requestJson.toString());

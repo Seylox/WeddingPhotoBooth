@@ -59,6 +59,16 @@
             android:text="Open Last"
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
+
+        <Button
+            android:id="@+id/switch_postviewimagesize_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Switch size"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:onClick="onClickSwitchpostviewimagesize"
+            />
     </LinearLayout>
 
     <LinearLayout

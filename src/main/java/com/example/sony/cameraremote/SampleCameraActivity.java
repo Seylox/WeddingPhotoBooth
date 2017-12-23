@@ -82,6 +82,8 @@ public class SampleCameraActivity extends Activity {
 
     private final Set<String> mSupportedApiSet = new HashSet<String>();
 
+    private String mPostviewImageSize = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -313,6 +315,37 @@ public class SampleCameraActivity extends Activity {
         closeConnection();
 
         Log.d(TAG, "onPause() completed.");
+    }
+
+    public void onClickSwitchpostviewimagesize(View view) {
+        // TODO
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    if (TextUtils.isEmpty(mPostviewImageSize) || mPostviewImageSize.equals("2M")) {
+                        mPostviewImageSize = "Original";
+                    } else {
+                        mPostviewImageSize = "2M";
+                    }
+                    JSONObject replyJson = mRemoteApi.setPostviewImageSize(mPostviewImageSize);
+                    JSONArray resultsObj = replyJson.getJSONArray("result");
+                    Timber.d("--- setPostviewImageSize response: " + replyJson);
+
+                } catch (IOException e) {
+                    Log.w(TAG, "IOException while closing slicer: " + e.getMessage());
+                    DisplayHelper.toast(getApplicationContext(), //
+                            R.string.msg_error_api_calling);
+                } catch (JSONException e) {
+                    Log.w(TAG, "JSONException while closing slicer");
+                    DisplayHelper.toast(getApplicationContext(), //
+                            R.string.msg_error_api_calling);
+                } finally {
+                    DisplayHelper.setProgressIndicator(SampleCameraActivity.this, false);
+                }
+            }
+        }.start();
     }
 
     private void prepareOpenConnection() {
