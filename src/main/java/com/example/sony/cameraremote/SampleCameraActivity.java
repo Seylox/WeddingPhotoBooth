@@ -395,8 +395,7 @@ public class SampleCameraActivity extends Activity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-
-                    File file = new File(
+                    final File file = new File(
                             getApplicationContext()
                                     .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                                     .getPath()
@@ -411,6 +410,16 @@ public class SampleCameraActivity extends Activity {
                     catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    // TODO start activity from main thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(SampleCameraActivity.this, PrintActivity.class);
+                            intent.putExtra("IMAGEFILENAME", file.getPath());
+                            startActivity(intent);
+                        }
+                    });
                 }
             }).start();
         }
