@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2014 Sony Corporation -->
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2014 Sony Corporation -->
 <resources>
 
     <string name="app_name">Camera Remote API Sample</string>
