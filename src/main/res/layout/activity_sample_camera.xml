@@ -70,6 +70,16 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:onClick="onClickSwitchpostviewimagesize"
             />
+
+        <Button
+            android:id="@+id/start_series_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Start Series"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:onClick="onClickStartSeries"
+            />
     </LinearLayout>
 
     <LinearLayout

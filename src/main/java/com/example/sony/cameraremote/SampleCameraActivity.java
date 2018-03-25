@@ -16,6 +16,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -44,6 +46,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
@@ -93,6 +98,17 @@ public class SampleCameraActivity extends Activity {
     private String mPostviewImageSize = "";
 
     private int mCounter = 0;
+
+    private int picturesTakenCounter = 0;
+
+    private ArrayList<String> takenPictureFilePathArrayList = new ArrayList<>();
+
+    private ThreadPoolExecutor singleThreadExecutor = new ThreadPoolExecutor(
+            1,
+            1,
+            0,
+            TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -327,6 +343,223 @@ public class SampleCameraActivity extends Activity {
         Log.d(TAG, "onPause() completed.");
     }
 
+    private void createImageCollage() {
+        Bitmap bitmap1 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(0));
+        Bitmap bitmap2 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(1));
+        Bitmap bitmap3 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(2));
+        Bitmap bitmap4 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(3));
+
+        bitmap1 = Bitmap.createScaledBitmap(bitmap1,
+                bitmap1.getWidth() / 4,
+                bitmap1.getHeight() / 4,
+                true);
+        bitmap2 = Bitmap.createScaledBitmap(bitmap2,
+                bitmap2.getWidth() / 4,
+                bitmap2.getHeight() / 4,
+                true);
+        bitmap3 = Bitmap.createScaledBitmap(bitmap3,
+                bitmap3.getWidth() / 4,
+                bitmap3.getHeight() / 4,
+                true);
+        bitmap4 = Bitmap.createScaledBitmap(bitmap4,
+                bitmap4.getWidth() / 4,
+                bitmap4.getHeight() / 4,
+                true);
+
+        Bitmap result = Bitmap.createBitmap(bitmap1.getWidth() * 2,
+                bitmap1.getHeight() * 2, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint();
+        canvas.drawBitmap(bitmap1, 0, 0, paint);
+        canvas.drawBitmap(bitmap2, bitmap1.getWidth(), 0, paint);
+        canvas.drawBitmap(bitmap3, 0, bitmap1.getHeight(), paint);
+        canvas.drawBitmap(bitmap4, bitmap3.getWidth(), bitmap2.getHeight(), paint);
+
+        // TODO: create filename such as DSC03630-03633.JPG
+        // DSC03630.JPG
+        String firstFilename = takenPictureFilePathArrayList.get(0);
+        String startNumber = firstFilename.substring(firstFilename.length() - 9,
+                firstFilename.length() - 4);
+        Timber.d("--- startNumber: " + startNumber);
+        String lastFilename = takenPictureFilePathArrayList.get(3);
+        String endNumber = lastFilename.substring(lastFilename.length() - 9,
+                lastFilename.length() - 4);
+        Timber.d("--- endNumber: " + endNumber);
+
+        final File file = new File(
+                getApplicationContext()
+                        .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                        .getPath()
+                        + "/" + "DSC" + startNumber + "-" + endNumber + ".JPG");
+        Timber.d("--- combinedPicture file: " + file.getPath());
+        try {
+            file.createNewFile();
+            FileOutputStream ostream = new FileOutputStream(file);
+            result.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+            ostream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // TODO start activity from main thread
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(SampleCameraActivity.this, PrintActivity.class);
+                intent.putExtra("IMAGEFILENAME", file.getPath());
+                startActivity(intent);
+            }
+        });
+    }
+
+    public void onClickStartSeries(View view) {
+        singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
+        singleThreadExecutor.submit(takeAndFetchPictureThread);
+
+//        String baseFilePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03630.JPG");
+//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03631.JPG");
+//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03632.JPG");
+//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03633.JPG");
+//
+//        Bitmap bitmap1 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(0));
+//        Bitmap bitmap2 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(1));
+//        Bitmap bitmap3 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(2));
+//        Bitmap bitmap4 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(3));
+//
+//        bitmap1 = Bitmap.createScaledBitmap(bitmap1,
+//                bitmap1.getWidth() / 4,
+//                bitmap1.getHeight() / 4,
+//                true);
+//        bitmap2 = Bitmap.createScaledBitmap(bitmap2,
+//                bitmap2.getWidth() / 4,
+//                bitmap2.getHeight() / 4,
+//                true);
+//        bitmap3 = Bitmap.createScaledBitmap(bitmap3,
+//                bitmap3.getWidth() / 4,
+//                bitmap3.getHeight() / 4,
+//                true);
+//        bitmap4 = Bitmap.createScaledBitmap(bitmap4,
+//                bitmap4.getWidth() / 4,
+//                bitmap4.getHeight() / 4,
+//                true);
+//
+//        Bitmap result = Bitmap.createBitmap(bitmap1.getWidth() * 2,
+//                bitmap1.getHeight() * 2, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(result);
+//        Paint paint = new Paint();
+//        canvas.drawBitmap(bitmap1, 0, 0, paint);
+//        canvas.drawBitmap(bitmap2, bitmap1.getWidth(), 0, paint);
+//        canvas.drawBitmap(bitmap3, 0, bitmap1.getHeight(), paint);
+//        canvas.drawBitmap(bitmap4, bitmap3.getWidth(), bitmap2.getHeight(), paint);
+//
+//
+//        Drawable pictureDrawable = new BitmapDrawable(getResources(), result);
+//        mImagePictureWipe.setVisibility(View.VISIBLE);
+//        mImagePictureWipe.setImageDrawable(pictureDrawable);
+//
+//
+//
+//        final File file = new File(
+//                getApplicationContext()
+//                        .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                        .getPath()
+//                        + "/" + "combinedPicture.jpg");
+//        Timber.d("--- combinedPicture file: " + file.getPath());
+//        try {
+//            file.createNewFile();
+//            FileOutputStream ostream = new FileOutputStream(file);
+//            result.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+//            ostream.close();
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        // TODO start activity from main thread
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Intent intent = new Intent(SampleCameraActivity.this, PrintActivity.class);
+//                intent.putExtra("IMAGEFILENAME", file.getPath());
+//                startActivity(intent);
+//            }
+//        });
+    }
+
+    private Thread takeAndFetchPictureThread = new Thread() {
+        @Override
+        public void run() {
+            try {
+                JSONObject replyJson = mRemoteApi.actTakePicture();
+                JSONArray resultsObj = replyJson.getJSONArray("result");
+                JSONArray imageUrlsObj = resultsObj.getJSONArray(0);
+                String postImageUrl = null;
+                if (1 <= imageUrlsObj.length()) {
+                    postImageUrl = imageUrlsObj.getString(0);
+                }
+                if (postImageUrl == null) {
+                    Log.w(TAG, "takeAndFetchPictureThread: post image URL is null.");
+                    DisplayHelper.toast(getApplicationContext(), //
+                            R.string.msg_error_take_picture);
+                    return;
+                }
+                // Show progress indicator
+                DisplayHelper.setProgressIndicator(SampleCameraActivity.this, true);
+
+                URL url = new URL(postImageUrl);
+                mOpenLastUrl = postImageUrl;
+                Timber.d("--- takeAndFetchPictureThread mOpenLastUrl: " + mOpenLastUrl + " and " + url);
+
+                String path = url.getPath();
+                mLastTakenPhotoName = path.substring(path.lastIndexOf('/') + 1);
+                Timber.d("--- takeAndFetchPictureThread mLastTakenPhotoName: " + mLastTakenPhotoName);
+
+//                InputStream istream = new BufferedInputStream(url.openStream());
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inSampleSize = 4; // irresponsible value
+//                final Drawable pictureDrawable =
+//                        new BitmapDrawable(getResources(), //
+//                                BitmapFactory.decodeStream(istream, null, options));
+//                istream.close();
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+//                        mImagePictureWipe.setVisibility(View.VISIBLE);
+//                        mImagePictureWipe.setImageDrawable(pictureDrawable);
+
+                        Picasso.with(SampleCameraActivity.this).load(mOpenLastUrl).into(targetWithNextThread);
+                    }
+                });
+            } catch (IOException e) {
+                Log.w(TAG, "IOException while closing slicer: " + e.getMessage());
+                DisplayHelper.toast(getApplicationContext(), //
+                        R.string.msg_error_take_picture);
+            } catch (JSONException e) {
+                Log.w(TAG, "JSONException while closing slicer");
+                DisplayHelper.toast(getApplicationContext(), //
+                        R.string.msg_error_take_picture);
+            } finally {
+                DisplayHelper.setProgressIndicator(SampleCameraActivity.this, false);
+            }
+        }
+    };
+
+    private Thread setOriginalPostviewImageSizeThread = new Thread() {
+        @Override
+        public void run() {
+            try {
+                JSONObject replyJson = mRemoteApi.setPostviewImageSize("Original");
+                JSONArray resultsObj = replyJson.getJSONArray("result");
+                Timber.d("--- setOriginalPostviewImageSizeThread response: " + replyJson);
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     public void onClickSwitchpostviewimagesize(View view) {
         new Thread() {
             @Override
@@ -389,7 +622,53 @@ public class SampleCameraActivity extends Activity {
 //        }.start();
     }
 
-    private Target target = new Target() {
+    private Target targetWithNextThread = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            final File file = new File(
+                    getApplicationContext()
+                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                            .getPath()
+                            + "/" + mLastTakenPhotoName);
+            Timber.d("--- targetWithNextThread file: " + file.getPath());
+            try {
+                file.createNewFile();
+                FileOutputStream ostream = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                ostream.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            takenPictureFilePathArrayList.add(file.getPath());
+            picturesTakenCounter++;
+
+            if (picturesTakenCounter < 4) {
+                // TODO start next thread
+                Timber.d("--- targetWithNextThread picturesTakenCounter < 4: " + picturesTakenCounter);
+                singleThreadExecutor.submit(takeAndFetchPictureThread);
+
+            } else {
+                // TODO reset counter and do everything else.
+                Timber.d("--- targetWithNextThread picturesTakenCounter >= 4: " + picturesTakenCounter);
+                createImageCollage();
+//                picturesTakenCounter = 0;
+            }
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
+
+    private Target targetWithOpenPrintActivity = new Target() {
         @Override
         public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
             new Thread(new Runnable() {
@@ -400,7 +679,7 @@ public class SampleCameraActivity extends Activity {
                                     .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                                     .getPath()
                                     + "/" + mLastTakenPhotoName);
-                    Timber.d("--- target file: " + file.getPath());
+                    Timber.d("--- targetWithOpenPrintActivity file: " + file.getPath());
                     try {
                         file.createNewFile();
                         FileOutputStream ostream = new FileOutputStream(file);
@@ -761,7 +1040,7 @@ public class SampleCameraActivity extends Activity {
     }
 
     /**
-     * Retrieve a list of APIs that are supported by the target device.
+     * Retrieve a list of APIs that are supported by the targetWithOpenPrintActivity device.
      * 
      * @param replyJson
      */
@@ -1074,7 +1353,7 @@ public class SampleCameraActivity extends Activity {
                             mImagePictureWipe.setVisibility(View.VISIBLE);
                             mImagePictureWipe.setImageDrawable(pictureDrawable);
 
-                            Picasso.with(SampleCameraActivity.this).load(mOpenLastUrl).into(target);
+                            Picasso.with(SampleCameraActivity.this).load(mOpenLastUrl).into(targetWithOpenPrintActivity);
                         }
                     });
 
