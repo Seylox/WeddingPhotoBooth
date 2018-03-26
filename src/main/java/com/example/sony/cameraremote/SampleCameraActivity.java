@@ -390,7 +390,10 @@ public class SampleCameraActivity extends Activity {
                 getApplicationContext()
                         .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                         .getPath()
-                        + "/" + "DSC" + startNumber + "-" + endNumber + ".JPG");
+                        + "/" + "collages/" + "DSC" + startNumber + "-" + endNumber + ".JPG");
+        File collagesPath = new File(getApplicationContext()
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath() + "/collages");
+        collagesPath.mkdirs();
         Timber.d("--- combinedPicture file: " + file.getPath());
         try {
             file.createNewFile();
@@ -653,7 +656,8 @@ public class SampleCameraActivity extends Activity {
                 // TODO reset counter and do everything else.
                 Timber.d("--- targetWithNextThread picturesTakenCounter >= 4: " + picturesTakenCounter);
                 createImageCollage();
-//                picturesTakenCounter = 0;
+                picturesTakenCounter = 0;
+                takenPictureFilePathArrayList.clear();
             }
         }
 
