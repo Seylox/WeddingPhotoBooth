@@ -111,6 +111,8 @@ public class SampleCameraActivity extends Activity {
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
 
+    private View decorView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +121,7 @@ public class SampleCameraActivity extends Activity {
 
         // disable screen timeout while app is running
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        decorView = getWindow().getDecorView();
 
         SampleApplication app = (SampleApplication) getApplication();
         mTargetServer = app.getTargetServerDevice();
@@ -345,6 +348,20 @@ public class SampleCameraActivity extends Activity {
         closeConnection();
 
         Log.d(TAG, "onPause() completed.");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
     }
 
     private void createImageCollage() {
