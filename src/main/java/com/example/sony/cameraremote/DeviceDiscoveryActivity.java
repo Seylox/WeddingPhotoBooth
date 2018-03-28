@@ -72,7 +72,8 @@ public class DeviceDiscoveryActivity extends Activity {
         Log.d(TAG, "onCreate() completed.");
         mCameraWifiButton = (Button) findViewById(R.id.camera_wifi_button);
         mPrinterWifiButton = (Button) findViewById(R.id.printer_wifi_button);
-        runPeriodicWifiTask();
+//        runPeriodicWifiTask();
+        searchDevices();
     }
 
     @Override
