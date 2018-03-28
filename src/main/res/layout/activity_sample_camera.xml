@@ -119,6 +119,18 @@
         android:text=""
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <TextView
+        android:id="@+id/center_information_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="150sp"
+        android:padding="16dp"
+        android:background="@android:color/black"
+        tools:text="HELLO"
+        />
+
     <ImageView
         android:id="@+id/image_picture_wipe"
         android:layout_width="150dp"

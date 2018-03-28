@@ -22,6 +22,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -98,6 +99,8 @@ public class SampleCameraActivity extends Activity {
 
     private String mPostviewImageSize = "";
 
+    private TextView centerInformationTextview;
+
     private int mCounter = 0;
 
     private int picturesTakenCounter = 0;
@@ -138,6 +141,8 @@ public class SampleCameraActivity extends Activity {
         mButtonContentsListMode = (Button) findViewById(R.id.button_contents_list);
         mTextCameraStatus = (TextView) findViewById(R.id.text_camera_status);
         mOpenLastButton = findViewById(R.id.open_last_button);
+        centerInformationTextview = findViewById(R.id.center_information_textview);
+        centerInformationTextview.setVisibility(View.GONE);
 
         mOpenLastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,9 +442,40 @@ public class SampleCameraActivity extends Activity {
         });
     }
 
+    int secondsRemaining = 5;
+
     public void onClickStartSeries(View view) {
-        singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
-        singleThreadExecutor.submit(takeAndFetchPictureThread);
+        // TODO disable startSeries Button
+
+        secondsRemaining = 5;
+        new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (secondsRemaining == 5) {
+                    centerInformationTextview.setVisibility(View.VISIBLE);
+                    centerInformationTextview.setText("GET READY!");
+                } else if (secondsRemaining == 3) {
+                    centerInformationTextview.setText("3");
+                } else if (secondsRemaining == 2) {
+                    centerInformationTextview.setText("2");
+                } else if (secondsRemaining == 1) {
+                    centerInformationTextview.setText("1");
+                }
+                secondsRemaining--;
+            }
+
+            @Override
+            public void onFinish() {
+                centerInformationTextview.setVisibility(View.GONE);
+                singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
+                singleThreadExecutor.submit(takeAndFetchPictureThread);
+            }
+        }.start();
+
+
+
+//        singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
+//        singleThreadExecutor.submit(takeAndFetchPictureThread);
 
 //        String baseFilePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
 //        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03630.JPG");
