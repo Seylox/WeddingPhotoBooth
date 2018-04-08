@@ -29,33 +29,28 @@
         <activity
             android:name=".SampleCameraActivity"
             android:label="@string/sample_camera"
-            android:screenOrientation="landscape"
             />
         <activity
             android:name=".DateListActivity"
             android:label="@string/title_activity_date_list"
-            android:screenOrientation="landscape"
             />
         <activity
             android:name=".ContentsGridActivity"
             android:label="@string/title_activity_contents_grid"
-            android:screenOrientation="landscape"
             />
         <activity
             android:name=".StillContentActivity"
             android:label="@string/title_activity_still_content"
-            android:screenOrientation="landscape"
             />
         <activity
             android:name=".MovieContentActivity"
             android:label="@string/title_activity_movie_content"
-            android:screenOrientation="landscape"
             />
         <activity
             android:name=".PrintActivity"
             android:label="PrintActivity"
-            android:screenOrientation="landscape"
             />
+        <!--android:screenOrientation="landscape"-->
     </application>
 
 </manifest>
