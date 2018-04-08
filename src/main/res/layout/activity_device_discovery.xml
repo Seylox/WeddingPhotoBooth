@@ -31,7 +31,7 @@
             android:onClick="onClickCameraWifiButton"
             />
         <Button
-            android:id="@+id/printer_wifi_button"
+            android:id="@+id/delete_pictures_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PrinterWiFi"

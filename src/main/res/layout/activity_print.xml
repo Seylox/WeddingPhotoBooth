@@ -18,38 +18,27 @@
         />
 
     <Button
-        android:id="@+id/print_button"
+        android:id="@+id/print_pictures_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:text="Print"
+        android:text="Print Pictures"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:onClick="onClickPrintButton"
+        android:onClick="onClickPrintPicturesButton"
         />
 
     <Button
-        android:id="@+id/printer_wifi_button"
+        android:id="@+id/delete_pictures_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
-        android:text="PrinterWifi"
+        android:text="Delete Pictures"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/print_button"
-        android:onClick="onClickPrinterWifiButton"
+        app:layout_constraintEnd_toStartOf="@+id/print_pictures_button"
+        android:onClick="onClickDeletePicturesButton"
         />
 
-    <Button
-        android:id="@+id/camera_wifi_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="CameraWifi"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/printer_wifi_button"
-        android:onClick="onClickCameraWifiButton"
-        />
 </android.support.constraint.ConstraintLayout>
