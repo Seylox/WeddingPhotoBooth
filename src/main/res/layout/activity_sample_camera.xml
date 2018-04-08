@@ -80,6 +80,16 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:onClick="onClickStartSeries"
             />
+
+        <Button
+            android:id="@+id/call_params_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Call Params"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:onClick="onClickCallParams"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -129,6 +139,7 @@
         android:padding="16dp"
         android:background="@android:color/black"
         tools:text="HELLO"
+        tools:visibility="gone"
         />
 
     <ImageView

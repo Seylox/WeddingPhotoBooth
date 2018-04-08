@@ -369,6 +369,9 @@ public class SampleCameraActivity extends Activity {
         }
     }
 
+    /**
+     * Create Image Collage from the last 4 taken images
+     */
     private void createImageCollage() {
         Bitmap bitmap1 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(0));
         Bitmap bitmap2 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(1));
@@ -444,6 +447,10 @@ public class SampleCameraActivity extends Activity {
 
     int secondsRemaining = 5;
 
+    /**
+     * Start Image Series
+     * @param view
+     */
     public void onClickStartSeries(View view) {
         // TODO disable startSeries Button
 
@@ -471,81 +478,6 @@ public class SampleCameraActivity extends Activity {
                 singleThreadExecutor.submit(takeAndFetchPictureThread);
             }
         }.start();
-
-
-
-//        singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
-//        singleThreadExecutor.submit(takeAndFetchPictureThread);
-
-//        String baseFilePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
-//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03630.JPG");
-//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03631.JPG");
-//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03632.JPG");
-//        takenPictureFilePathArrayList.add(baseFilePath + "/DSC03633.JPG");
-//
-//        Bitmap bitmap1 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(0));
-//        Bitmap bitmap2 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(1));
-//        Bitmap bitmap3 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(2));
-//        Bitmap bitmap4 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(3));
-//
-//        bitmap1 = Bitmap.createScaledBitmap(bitmap1,
-//                bitmap1.getWidth() / 4,
-//                bitmap1.getHeight() / 4,
-//                true);
-//        bitmap2 = Bitmap.createScaledBitmap(bitmap2,
-//                bitmap2.getWidth() / 4,
-//                bitmap2.getHeight() / 4,
-//                true);
-//        bitmap3 = Bitmap.createScaledBitmap(bitmap3,
-//                bitmap3.getWidth() / 4,
-//                bitmap3.getHeight() / 4,
-//                true);
-//        bitmap4 = Bitmap.createScaledBitmap(bitmap4,
-//                bitmap4.getWidth() / 4,
-//                bitmap4.getHeight() / 4,
-//                true);
-//
-//        Bitmap result = Bitmap.createBitmap(bitmap1.getWidth() * 2,
-//                bitmap1.getHeight() * 2, Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(result);
-//        Paint paint = new Paint();
-//        canvas.drawBitmap(bitmap1, 0, 0, paint);
-//        canvas.drawBitmap(bitmap2, bitmap1.getWidth(), 0, paint);
-//        canvas.drawBitmap(bitmap3, 0, bitmap1.getHeight(), paint);
-//        canvas.drawBitmap(bitmap4, bitmap3.getWidth(), bitmap2.getHeight(), paint);
-//
-//
-//        Drawable pictureDrawable = new BitmapDrawable(getResources(), result);
-//        mImagePictureWipe.setVisibility(View.VISIBLE);
-//        mImagePictureWipe.setImageDrawable(pictureDrawable);
-//
-//
-//
-//        final File file = new File(
-//                getApplicationContext()
-//                        .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                        .getPath()
-//                        + "/" + "combinedPicture.jpg");
-//        Timber.d("--- combinedPicture file: " + file.getPath());
-//        try {
-//            file.createNewFile();
-//            FileOutputStream ostream = new FileOutputStream(file);
-//            result.compress(Bitmap.CompressFormat.JPEG,100,ostream);
-//            ostream.close();
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // TODO start activity from main thread
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent intent = new Intent(SampleCameraActivity.this, PrintActivity.class);
-//                intent.putExtra("IMAGEFILENAME", file.getPath());
-//                startActivity(intent);
-//            }
-//        });
     }
 
     private Thread takeAndFetchPictureThread = new Thread() {
@@ -620,6 +552,30 @@ public class SampleCameraActivity extends Activity {
         }
     };
 
+    public void onClickCallParams(View view) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject replyJson = mRemoteApi.callParamsApi("getEvent", "1.0");
+                    JSONArray resultsObj = replyJson.getJSONArray("result");
+                    Timber.d("--- callParamsApi getEvent: " + replyJson);
+
+                } catch (IOException e) {
+                    Log.w(TAG, "IOException while closing slicer: " + e.getMessage());
+                    DisplayHelper.toast(getApplicationContext(), //
+                            R.string.msg_error_api_calling);
+                } catch (JSONException e) {
+                    Log.w(TAG, "JSONException while closing slicer");
+                    DisplayHelper.toast(getApplicationContext(), //
+                            R.string.msg_error_api_calling);
+                } finally {
+                    DisplayHelper.setProgressIndicator(SampleCameraActivity.this, false);
+                }
+            }
+        }.start();
+    }
+
     public void onClickSwitchpostviewimagesize(View view) {
         new Thread() {
             @Override
@@ -647,39 +603,6 @@ public class SampleCameraActivity extends Activity {
                 }
             }
         }.start();
-
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    String params = "";
-//                    if (mCounter == 0) {
-//                        params = "getStillSize";
-//                        mCounter++;
-//                    } else if (mCounter == 1) {
-//                        params = "getSupportedStillSize";
-//                        mCounter++;
-//                    } else if (mCounter == 2) {
-//                        params = "getAvailableStillSize";
-//                        mCounter = 0;
-//                    }
-//                    JSONObject replyJson = mRemoteApi.callParamsApi(params);
-//                    JSONArray resultsObj = replyJson.getJSONArray("result");
-//                    Timber.d("--- callParams response: " + replyJson);
-//
-//                } catch (IOException e) {
-//                    Log.w(TAG, "IOException while closing slicer: " + e.getMessage());
-//                    DisplayHelper.toast(getApplicationContext(), //
-//                            R.string.msg_error_api_calling);
-//                } catch (JSONException e) {
-//                    Log.w(TAG, "JSONException while closing slicer");
-//                    DisplayHelper.toast(getApplicationContext(), //
-//                            R.string.msg_error_api_calling);
-//                } finally {
-//                    DisplayHelper.setProgressIndicator(SampleCameraActivity.this, false);
-//                }
-//            }
-//        }.start();
     }
 
     private Target targetWithNextThread = new Target() {

@@ -407,7 +407,7 @@ public class SimpleRemoteApi {
      * @return JSON data of response
      * @throws IOException
      */
-    public JSONObject callParamsApi(String params) throws IOException {
+    public JSONObject callParamsApi(String params, String apiVersion) throws IOException {
         // TODO
         String service = "camera";
         try {
@@ -416,7 +416,7 @@ public class SimpleRemoteApi {
                             .put("method", params)
                             .put("params", new JSONArray())
                             .put("id", id())
-                            .put("version", "1.0");
+                            .put("version", apiVersion);
             Timber.d("--- callParamsApi RequestJson: " + requestJson);
             String url = findActionListUrl(service) + "/" + service;
 
