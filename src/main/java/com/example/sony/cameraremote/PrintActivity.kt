@@ -3,13 +3,13 @@ package com.example.sony.cameraremote
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.v4.print.PrintHelper
+import android.os.Environment
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import com.example.sony.cameraremote.utils.FileUtils
 import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
@@ -46,7 +46,9 @@ class PrintActivity : Activity() {
         findViewById<Button>(R.id.print_pictures_button)
     }
 
-    lateinit var fileToPrintString: String
+    lateinit var completeFileName: String
+    lateinit var collagesPathName: String
+    lateinit var simpleFileName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,33 +58,31 @@ class PrintActivity : Activity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // collect information from intent extras
-        val filename = intent.getStringExtra(EXTRA_COMPLETE_FILENAME)
-        val collagesPathName = intent.getStringExtra(EXTRA_COLLAGES_PATHNAME)
-        val simpleFileName = intent.getStringExtra(EXTRA_SIMPLE_FILENAME)
-        fileToPrintString = filename
+        completeFileName = intent.getStringExtra(EXTRA_COMPLETE_FILENAME)
+        collagesPathName = intent.getStringExtra(EXTRA_COLLAGES_PATHNAME)
+        simpleFileName = intent.getStringExtra(EXTRA_SIMPLE_FILENAME)
 
-        Timber.d("--- EXTRA_COMPLETE_FILENAME: $filename")
-        Timber.d("--- EXTRA_COLLAGES_PATHNAME: $collagesPathName")
-        Timber.d("--- EXTRA_SIMPLE_FILENAME: $simpleFileName")
+//        Timber.d("--- EXTRA_COMPLETE_FILENAME: $completeFileName")
+//        Timber.d("--- EXTRA_COLLAGES_PATHNAME: $collagesPathName")
+//        Timber.d("--- EXTRA_SIMPLE_FILENAME: $simpleFileName")
 
-        val file = File(filename)
+        val file = File(completeFileName)
 
-        Timber.d("--- file actually: $file")
         Picasso.with(this).isLoggingEnabled = true
         Picasso.with(this).load(file).into(mImageView)
     }
 
-    private fun doPhotoPrint() {
-        // TODO instead of printing this i need to move it to a separate folder!
+    private fun copyPhotoToPrintDirectory() {
+        val printPathName = applicationContext
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                .path + "/print/"
+        val printPath = File(printPathName)
+        printPath.mkdirs()
 
-        val photoPrinter = PrintHelper(this)
-        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FILL
-        val bitmapToPrint = BitmapFactory.decodeFile(fileToPrintString)
-        photoPrinter.printBitmap("PictureToPrint", bitmapToPrint)
+        val printFileName = printPathName + simpleFileName
 
-//        val bitmap = BitmapFactory.decodeResource(resources,
-//                R.drawable.droids)
-//        photoPrinter.printBitmap("droids.jpg - test print", bitmap)
+        Timber.d("--- copying $completeFileName to $printFileName")
+        FileUtils.copyFileOrDirectory(completeFileName, printPathName)
     }
 
     public fun onClickDeletePicturesButton(view: View) {
@@ -90,8 +90,8 @@ class PrintActivity : Activity() {
     }
 
     public fun onClickPrintPicturesButton(view: View) {
-        // TODO!
-//        doPhotoPrint()
+        // TODO safe guard and progress
+        copyPhotoToPrintDirectory()
     }
 
     /**
