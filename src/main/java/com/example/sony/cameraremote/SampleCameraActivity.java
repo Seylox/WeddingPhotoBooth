@@ -378,22 +378,22 @@ public class SampleCameraActivity extends Activity {
         Bitmap bitmap3 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(2));
         Bitmap bitmap4 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(3));
 
-        bitmap1 = Bitmap.createScaledBitmap(bitmap1,
-                bitmap1.getWidth() / 4,
-                bitmap1.getHeight() / 4,
-                true);
-        bitmap2 = Bitmap.createScaledBitmap(bitmap2,
-                bitmap2.getWidth() / 4,
-                bitmap2.getHeight() / 4,
-                true);
-        bitmap3 = Bitmap.createScaledBitmap(bitmap3,
-                bitmap3.getWidth() / 4,
-                bitmap3.getHeight() / 4,
-                true);
-        bitmap4 = Bitmap.createScaledBitmap(bitmap4,
-                bitmap4.getWidth() / 4,
-                bitmap4.getHeight() / 4,
-                true);
+//        bitmap1 = Bitmap.createScaledBitmap(bitmap1,
+//                bitmap1.getWidth() / 2,
+//                bitmap1.getHeight() / 2,
+//                true);
+//        bitmap2 = Bitmap.createScaledBitmap(bitmap2,
+//                bitmap2.getWidth() / 2,
+//                bitmap2.getHeight() / 2,
+//                true);
+//        bitmap3 = Bitmap.createScaledBitmap(bitmap3,
+//                bitmap3.getWidth() / 2,
+//                bitmap3.getHeight() / 2,
+//                true);
+//        bitmap4 = Bitmap.createScaledBitmap(bitmap4,
+//                bitmap4.getWidth() / 2,
+//                bitmap4.getHeight() / 2,
+//                true);
 
         Bitmap result = Bitmap.createBitmap(bitmap1.getWidth() * 2,
                 bitmap1.getHeight() * 2, Bitmap.Config.ARGB_8888);
