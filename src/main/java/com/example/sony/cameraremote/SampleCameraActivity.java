@@ -415,14 +415,14 @@ public class SampleCameraActivity extends Activity {
                 lastFilename.length() - 4);
         Timber.d("--- endNumber: " + endNumber);
 
-        final File file = new File(
-                getApplicationContext()
-                        .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                        .getPath()
-                        + "/" + "collages/" + "DSC" + startNumber + "-" + endNumber + ".JPG");
-        File collagesPath = new File(getApplicationContext()
-                .getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath() + "/collages");
+        final String collagesPathName = getApplicationContext()
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                .getPath() + "/collages/";
+        File collagesPath = new File(collagesPathName);
         collagesPath.mkdirs();
+        final String simpleFileName = "DSC" + startNumber + "-" + endNumber + ".JPG";
+        final File file = new File(collagesPathName + simpleFileName);
+
         Timber.d("--- combinedPicture file: " + file.getPath());
         try {
             file.createNewFile();
@@ -438,8 +438,8 @@ public class SampleCameraActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SampleCameraActivity.this, PrintActivity.class);
-                intent.putExtra("IMAGEFILENAME", file.getPath());
+                Intent intent = PrintActivity.Companion.buildPrintStartActivityIntent(
+                        SampleCameraActivity.this, file.getPath(), collagesPathName, simpleFileName);
                 startActivity(intent);
             }
         });

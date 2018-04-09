@@ -1,6 +1,8 @@
 package com.example.sony.cameraremote
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.print.PrintHelper
@@ -14,6 +16,23 @@ import java.io.File
 
 
 class PrintActivity : Activity() {
+
+    companion object {
+        private const val EXTRA_COMPLETE_FILENAME = "EXTRA_COMPLETE_FILENAME"
+        private const val EXTRA_COLLAGES_PATHNAME = "EXTRA_COLLAGES_PATHNAME"
+        private const val EXTRA_SIMPLE_FILENAME = "EXTRA_SIMPLE_FILENAME"
+
+        fun buildPrintStartActivityIntent(context: Context,
+                                          completeFileName: String,
+                                          collagesPathName: String,
+                                          simpleFileName: String): Intent {
+            val intent = Intent(context, PrintActivity::class.java)
+            intent.putExtra(EXTRA_COMPLETE_FILENAME, completeFileName)
+            intent.putExtra(EXTRA_COLLAGES_PATHNAME, collagesPathName)
+            intent.putExtra(EXTRA_SIMPLE_FILENAME, simpleFileName)
+            return intent
+        }
+    }
 
     val mImageView by lazy {
         findViewById<ImageView>(R.id.imageView)
@@ -36,10 +55,15 @@ class PrintActivity : Activity() {
         // disable screen timeout while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        val filename = intent.getStringExtra("IMAGEFILENAME")
+        // collect information from intent extras
+        val filename = intent.getStringExtra(EXTRA_COMPLETE_FILENAME)
+        val collagesPathName = intent.getStringExtra(EXTRA_COLLAGES_PATHNAME)
+        val simpleFileName = intent.getStringExtra(EXTRA_SIMPLE_FILENAME)
         fileToPrintString = filename
 
-        Timber.d("--- file from intent: $filename")
+        Timber.d("--- EXTRA_COMPLETE_FILENAME: $filename")
+        Timber.d("--- EXTRA_COLLAGES_PATHNAME: $collagesPathName")
+        Timber.d("--- EXTRA_SIMPLE_FILENAME: $simpleFileName")
 
         val file = File(filename)
 
