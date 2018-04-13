@@ -3,6 +3,10 @@
     <color name="transparent_gray">#d1455a64</color>
     <color name="less_transparent_blue">#1b81c1</color>
     <color name="transparent_blue">#dd1b81c1</color>
+    <color name="less_transparent_red">#a90f11</color>
+    <color name="transparent_red">#dda90f11</color>
+    <color name="less_transparent_green">#1ec11b</color>
+    <color name="transparent_green">#dd1ec11b</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 

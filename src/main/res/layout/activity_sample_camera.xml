@@ -176,7 +176,7 @@
             android:textSize="40sp"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:background="@drawable/circular_button"
+            android:background="@drawable/circular_button_blue"
             android:onClick="onClickTakeFourPicturesButton"
             />
 

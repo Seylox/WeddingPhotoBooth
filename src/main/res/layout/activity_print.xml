@@ -42,4 +42,51 @@
         android:onClick="onClickDeletePicturesButton"
         />
 
+    <RelativeLayout
+        android:id="@+id/user_buttons_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            android:padding="8dp"
+            >
+            <Button
+                android:id="@+id/no_delete_pictures_button"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:text="Löschen!"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/circular_button_red"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="32dp"
+                android:onClick="onClickDeletePicturesButton"
+                />
+
+            <Button
+                android:id="@+id/yes_print_pictures_button"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:text="Drucken!"
+                android:textSize="40sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/circular_button_green"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="32dp"
+                android:onClick="onClickPrintPicturesButton"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>
