@@ -116,6 +116,11 @@ public class SampleCameraActivity extends Activity {
 
     private View decorView;
 
+    // Seconds Remaining in any countdown
+    private int secondsRemaining;
+    // Counter which picture is being taken right now
+    private int currentPicNumBeingTaken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -445,7 +450,36 @@ public class SampleCameraActivity extends Activity {
         });
     }
 
-    int secondsRemaining = 5;
+    /**
+     * Show a count down on tablet and then take a picture using [takeAndFetchPictureThread]
+     */
+    private void countDownAndTakePicture() {
+        secondsRemaining = 6;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(6000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        if (secondsRemaining > 5) {
+                            centerInformationTextview.setVisibility(View.VISIBLE);
+                            centerInformationTextview.setText(currentPicNumBeingTaken + ". Foto in...");
+                        } else {
+                            centerInformationTextview.setText(Integer.toString(secondsRemaining));
+                        }
+                        secondsRemaining--;
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        centerInformationTextview.setVisibility(View.GONE);
+                        currentPicNumBeingTaken++;
+                        singleThreadExecutor.submit(takeAndFetchPictureThread);
+                    }
+                }.start();
+            }
+        });
+    }
 
     /**
      * Start Image Series
@@ -454,19 +488,14 @@ public class SampleCameraActivity extends Activity {
     public void onClickStartSeries(View view) {
         // TODO disable startSeries Button
 
-        secondsRemaining = 5;
-        new CountDownTimer(5000, 1000) {
+        currentPicNumBeingTaken = 1;
+        secondsRemaining = 3;
+        new CountDownTimer(3000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (secondsRemaining == 5) {
+                if (secondsRemaining > 0) {
                     centerInformationTextview.setVisibility(View.VISIBLE);
-                    centerInformationTextview.setText("GET READY!");
-                } else if (secondsRemaining == 3) {
-                    centerInformationTextview.setText("3");
-                } else if (secondsRemaining == 2) {
-                    centerInformationTextview.setText("2");
-                } else if (secondsRemaining == 1) {
-                    centerInformationTextview.setText("1");
+                    centerInformationTextview.setText("Wir machen jetzt 4 Fotos!");
                 }
                 secondsRemaining--;
             }
@@ -475,11 +504,15 @@ public class SampleCameraActivity extends Activity {
             public void onFinish() {
                 centerInformationTextview.setVisibility(View.GONE);
                 singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
-                singleThreadExecutor.submit(takeAndFetchPictureThread);
+                countDownAndTakePicture();
             }
         }.start();
     }
 
+    /**
+     * Thread that takes pictures and fetches them from the server (camera). Uses Picasso to
+     * load images from server (camera) and into [targetWithNextThread].
+     */
     private Thread takeAndFetchPictureThread = new Thread() {
         @Override
         public void run() {
@@ -508,13 +541,6 @@ public class SampleCameraActivity extends Activity {
                 mLastTakenPhotoName = path.substring(path.lastIndexOf('/') + 1);
                 Timber.d("--- takeAndFetchPictureThread mLastTakenPhotoName: " + mLastTakenPhotoName);
 
-//                InputStream istream = new BufferedInputStream(url.openStream());
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inSampleSize = 4; // irresponsible value
-//                final Drawable pictureDrawable =
-//                        new BitmapDrawable(getResources(), //
-//                                BitmapFactory.decodeStream(istream, null, options));
-//                istream.close();
                 runOnUiThread(new Runnable() {
 
                     @Override
@@ -539,6 +565,10 @@ public class SampleCameraActivity extends Activity {
         }
     };
 
+    /**
+     * Thread that sets PostviewImageSize to Original; use it before taking pictures that will be
+     * transferred from camera to tablet.
+     */
     private Thread setOriginalPostviewImageSizeThread = new Thread() {
         @Override
         public void run() {
@@ -552,6 +582,10 @@ public class SampleCameraActivity extends Activity {
         }
     };
 
+    /**
+     * Button "Call Params"
+     * @param view
+     */
     public void onClickCallParams(View view) {
         new Thread() {
             @Override
@@ -576,6 +610,10 @@ public class SampleCameraActivity extends Activity {
         }.start();
     }
 
+    /**
+     * Switch between 2M and Original Postview Image Size (button "Switch Size")
+     * @param view
+     */
     public void onClickSwitchpostviewimagesize(View view) {
         new Thread() {
             @Override
@@ -605,6 +643,10 @@ public class SampleCameraActivity extends Activity {
         }.start();
     }
 
+    /**
+     * Picasso Target that loads bitmap from server (camera) and writes it to file. After writing
+     * it either starts the next image taking process or the collage creating process.
+     */
     private Target targetWithNextThread = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -628,12 +670,10 @@ public class SampleCameraActivity extends Activity {
             picturesTakenCounter++;
 
             if (picturesTakenCounter < 4) {
-                // TODO start next thread
                 Timber.d("--- targetWithNextThread picturesTakenCounter < 4: " + picturesTakenCounter);
-                singleThreadExecutor.submit(takeAndFetchPictureThread);
+                countDownAndTakePicture();
 
             } else {
-                // TODO reset counter and do everything else.
                 Timber.d("--- targetWithNextThread picturesTakenCounter >= 4: " + picturesTakenCounter);
                 createImageCollage();
                 picturesTakenCounter = 0;
@@ -652,6 +692,10 @@ public class SampleCameraActivity extends Activity {
         }
     };
 
+    /**
+     * Picasso target that opens the print activity. At the moment only used for single picture
+     * taking purposes (and crashes, because PrintActivity starts differently now).
+     */
     private Target targetWithOpenPrintActivity = new Target() {
         @Override
         public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -694,6 +738,7 @@ public class SampleCameraActivity extends Activity {
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     };
 
+    // code below is not used for photo box --------------------------------------------------------
     private void prepareOpenConnection() {
         Log.d(TAG, "prepareToOpenConection() exec");
 
