@@ -135,11 +135,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
+        android:gravity="center"
         android:textSize="150sp"
-        android:padding="16dp"
-        android:background="@android:color/black"
-        tools:text="HELLO"
-        tools:visibility="gone"
+        android:layout_margin="64dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="64dp"
+        android:paddingStart="64dp"
+        android:paddingEnd="64dp"
+        android:paddingRight="64dp"
+        android:background="@drawable/rounded_corner"
+        tools:text="Wir machen jetzt 4 Fotos!"
+        tools:visibility="visible"
         />
 
     <ImageView
