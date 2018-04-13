@@ -122,6 +122,8 @@ public class SampleCameraActivity extends Activity {
     private int currentPicNumBeingTaken;
     // Round Button "Take four pictures!"
     private Button takeFourPicturesButton;
+    // boolean that decides if zoom buttons are allowed to be shown or not
+    private boolean zoomButtonsAllowedToBeShown = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -455,12 +457,14 @@ public class SampleCameraActivity extends Activity {
     }
 
     private void showButtons() {
+        zoomButtonsAllowedToBeShown = true;
         mButtonZoomIn.setVisibility(View.VISIBLE);
         mButtonZoomOut.setVisibility(View.VISIBLE);
         takeFourPicturesButton.setVisibility(View.VISIBLE);
     }
 
     private void hideButtons() {
+        zoomButtonsAllowedToBeShown = false;
         mButtonZoomIn.setVisibility(View.GONE);
         mButtonZoomOut.setVisibility(View.GONE);
         takeFourPicturesButton.setVisibility(View.GONE);
@@ -1333,7 +1337,8 @@ public class SampleCameraActivity extends Activity {
      * @param flag
      */
     private void prepareActZoomButtonsUi(boolean flag) {
-        if (flag) {
+        // I added zoomButtonsAllowedToBeShown to not show them when I don't want to have them on screen
+        if (flag && zoomButtonsAllowedToBeShown) {
             mButtonZoomOut.setVisibility(View.VISIBLE);
             mButtonZoomIn.setVisibility(View.VISIBLE);
         } else {
