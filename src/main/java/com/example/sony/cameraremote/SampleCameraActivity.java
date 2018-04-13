@@ -120,6 +120,8 @@ public class SampleCameraActivity extends Activity {
     private int secondsRemaining;
     // Counter which picture is being taken right now
     private int currentPicNumBeingTaken;
+    // Round Button "Take four pictures!"
+    private Button takeFourPicturesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +150,7 @@ public class SampleCameraActivity extends Activity {
         mOpenLastButton = findViewById(R.id.open_last_button);
         centerInformationTextview = findViewById(R.id.center_information_textview);
         centerInformationTextview.setVisibility(View.GONE);
+        takeFourPicturesButton = findViewById(R.id.take_four_pictures_button);
 
         mOpenLastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -446,8 +449,21 @@ public class SampleCameraActivity extends Activity {
                 Intent intent = PrintActivity.Companion.buildPrintStartActivityIntent(
                         SampleCameraActivity.this, file.getPath(), collagesPathName, simpleFileName);
                 startActivity(intent);
+                showButtons();
             }
         });
+    }
+
+    private void showButtons() {
+        mButtonZoomIn.setVisibility(View.VISIBLE);
+        mButtonZoomOut.setVisibility(View.VISIBLE);
+        takeFourPicturesButton.setVisibility(View.VISIBLE);
+    }
+
+    private void hideButtons() {
+        mButtonZoomIn.setVisibility(View.GONE);
+        mButtonZoomOut.setVisibility(View.GONE);
+        takeFourPicturesButton.setVisibility(View.GONE);
     }
 
     /**
@@ -479,6 +495,33 @@ public class SampleCameraActivity extends Activity {
                 }.start();
             }
         });
+    }
+
+    /**
+     * Click Handler for the "Take four pictures" Button
+     * @param view
+     */
+    public void onClickTakeFourPicturesButton(View view) {
+        hideButtons();
+        currentPicNumBeingTaken = 1;
+        secondsRemaining = 3;
+        new CountDownTimer(3000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (secondsRemaining > 0) {
+                    centerInformationTextview.setVisibility(View.VISIBLE);
+                    centerInformationTextview.setText("Wir machen jetzt 4 Fotos!");
+                }
+                secondsRemaining--;
+            }
+
+            @Override
+            public void onFinish() {
+                centerInformationTextview.setVisibility(View.GONE);
+                singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
+                countDownAndTakePicture();
+            }
+        }.start();
     }
 
     /**

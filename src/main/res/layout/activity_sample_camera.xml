@@ -16,7 +16,8 @@
         android:layout_height="match_parent"
         android:background="#66FFFFFF"
         android:orientation="vertical"
-        android:paddingRight="10dp" >
+        android:paddingRight="10dp"
+        android:visibility="gone">
 
         <Spinner
             android:id="@+id/spinner_shoot_mode"
@@ -145,7 +146,7 @@
         android:paddingEnd="64dp"
         android:paddingRight="64dp"
         android:background="@drawable/rounded_corner"
-        tools:text="Wir machen jetzt 4 Fotos!"
+        tools:text="2"
         tools:visibility="visible"
         />
 
@@ -160,5 +161,26 @@
         android:contentDescription="@string/no_image"
         android:src="@android:drawable/ic_menu_report_image"
         android:visibility="invisible" />
+
+    <RelativeLayout
+        android:id="@+id/user_buttons_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <Button
+            android:id="@+id/take_four_pictures_button"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerInParent="true"
+            android:text="Touch\nMe!"
+            android:textSize="40sp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@drawable/circular_button"
+            android:onClick="onClickTakeFourPicturesButton"
+            />
+
+
+    </RelativeLayout>
 
 </merge>
