@@ -379,6 +379,13 @@ public class SampleCameraActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // TODO react to if printactivity is printing or if we can take a photo right away now
+        showButtons();
+    }
+
     /**
      * Create Image Collage from the last 4 taken images
      */
@@ -450,8 +457,7 @@ public class SampleCameraActivity extends Activity {
             public void run() {
                 Intent intent = PrintActivity.Companion.buildPrintStartActivityIntent(
                         SampleCameraActivity.this, file.getPath(), collagesPathName, simpleFileName);
-                startActivity(intent);
-                showButtons();
+                startActivityForResult(intent, 12345);
             }
         });
     }
