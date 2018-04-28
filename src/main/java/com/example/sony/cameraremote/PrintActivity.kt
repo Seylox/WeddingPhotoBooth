@@ -86,6 +86,7 @@ class PrintActivity : Activity() {
     }
 
     public fun onClickDeletePicturesButton(view: View) {
+        // TODO: ask with AlertDialog...
         finish()
     }
 
