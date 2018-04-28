@@ -52,6 +52,8 @@ class PrintActivity : Activity() {
     lateinit var collagesPathName: String
     lateinit var simpleFileName: String
 
+    var photoAlreadyMoved = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_print)
@@ -75,16 +77,34 @@ class PrintActivity : Activity() {
     }
 
     private fun copyPhotoToPrintDirectory() {
-        val printPathName = applicationContext
-                .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                .path + "/print/"
-        val printPath = File(printPathName)
-        printPath.mkdirs()
+        if (!photoAlreadyMoved) {
+            photoAlreadyMoved = true
 
-        val printFileName = printPathName + simpleFileName
+            // saving number of pictures printed to sharedprefs
+            val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                    Context.MODE_PRIVATE)
+            var numberPicturesPrinted = sharedPreferences.getInt(
+                    SampleCameraActivity.numberPicturesPrintedPrefsString, 0)
+            if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
+                numberPicturesPrinted++
+            } else {
+                numberPicturesPrinted = 1
+            }
+            val editor = sharedPreferences.edit()
+            editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, numberPicturesPrinted)
+            editor.apply()
 
-        Timber.d("--- copying $completeFileName to $printFileName")
-        FileUtils.copyFileOrDirectory(completeFileName, printPathName)
+            val printPathName = applicationContext
+                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    .path + "/print/"
+            val printPath = File(printPathName)
+            printPath.mkdirs()
+
+            val printFileName = printPathName + simpleFileName
+
+            Timber.d("--- copying $completeFileName to $printFileName")
+            FileUtils.copyFileOrDirectory(completeFileName, printPathName)
+        }
     }
 
     public fun onClickDeletePicturesButton(view: View) {
@@ -123,11 +143,6 @@ class PrintActivity : Activity() {
             // TODO: "foto wird übertragen und dann gedruckt"
             // TODO: progress? (not possible, but indicator)
 
-            numberPicturesPrinted++
-            val editor = sharedPreferences.edit()
-            editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, numberPicturesPrinted)
-            editor.apply()
-
             copyPhotoToPrintDirectory()
             showPicturesPrintedDialog()
         } else {
@@ -137,9 +152,6 @@ class PrintActivity : Activity() {
             alertDialogBuilder.setMessage("Bitte Fotopapier nachlegen, sonst kann ich nicht" +
                     " weitermachen :( Bitte geh zu Thomas Geymayer oder Bernd Kampl, die wissen wie :)")
             alertDialogBuilder.setPositiveButton("Papier ist nachgelegt", { dialog, which ->
-                val editor = sharedPreferences.edit()
-                editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, 1)
-                editor.apply()
                 copyPhotoToPrintDirectory()
                 showPicturesPrintedDialog()
             })
