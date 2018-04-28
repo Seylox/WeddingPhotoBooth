@@ -836,7 +836,8 @@ public class SampleCameraActivity extends Activity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
-                "two", "three"};
+                "Increase Pictures Printed by one",
+                "Finish SampleCameraActivity"}; // better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
                 .setItems(secretMenuItems, new DialogInterface.OnClickListener() {
@@ -852,6 +853,8 @@ public class SampleCameraActivity extends Activity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putInt(numberPicturesPrintedPrefsString, numberPicturesPrinted);
                             editor.apply();
+                        } else if (which == 2) {
+                            finish();
                         }
                     }
                 });
