@@ -4,6 +4,7 @@
 
 package com.example.sony.cameraremote;
 
+import com.example.sony.cameraremote.utils.Constants;
 import com.example.sony.cameraremote.utils.DisplayHelper;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -823,7 +824,9 @@ public class SampleCameraActivity extends Activity {
                 Context.MODE_PRIVATE);
         int numberPicturesPrinted = sharedPreferences.getInt(numberPicturesPrintedPrefsString,
                 0);
-        xyPicturesLeftTextview.setText("Noch " + (18 - numberPicturesPrinted) + " Bilder im Drucker");
+        xyPicturesLeftTextview.setText("Noch " +
+                (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted) +
+                " Bilder im Drucker");
     }
 
     private void setDrawHeartInMiddlePrefs(boolean draw) {
@@ -877,7 +880,7 @@ public class SampleCameraActivity extends Activity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
-                "Increase Pictures Printed by one",
+                "Set Pictures printed to 18", // TODO make user configurable
                 drawHeartItem,
                 "Finish SampleCameraActivity"}; // better would be "switch WiFi"
 
@@ -889,12 +892,10 @@ public class SampleCameraActivity extends Activity {
                         if (which == 0) {
                             resetNumberPicturesPrinted();
                         } else if (which == 1) {
-                            int numberPicturesPrinted = sharedPreferences.getInt(
-                                    numberPicturesPrintedPrefsString, 0);
-                            numberPicturesPrinted++;
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putInt(numberPicturesPrintedPrefsString, numberPicturesPrinted);
+                            editor.putInt(numberPicturesPrintedPrefsString, 18);
                             editor.apply();
+                            setCorrectPicturesLeftTextview();
                         } else if (which == 2) {
                             setDrawHeartInMiddlePrefs(!getDrawHeartInMiddleFromPrefs());
                         } else if (which == 3) {
@@ -910,6 +911,10 @@ public class SampleCameraActivity extends Activity {
         alertDialog.getWindow().getDecorView().setSystemUiVisibility(
                 getWindow().getDecorView().getSystemUiVisibility());
         alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
+
+    private void showPicturesInPrinterInput() {
+        // TODO
     }
 
     private void resetNumberPicturesPrinted() {

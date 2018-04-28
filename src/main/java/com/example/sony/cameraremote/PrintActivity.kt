@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import com.example.sony.cameraremote.utils.Constants
 import com.example.sony.cameraremote.utils.FileUtils
 import com.squareup.picasso.Picasso
 import timber.log.Timber
@@ -88,8 +89,8 @@ class PrintActivity : Activity() {
 
     public fun onClickDeletePicturesButton(view: View) {
         val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setMessage("Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.")
         alertDialogBuilder.setTitle("Foto wirklich löschen?")
+        alertDialogBuilder.setMessage("Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.")
         alertDialogBuilder.setPositiveButton("Löschen", { dialog, which ->
             finish()
         })
@@ -117,13 +118,72 @@ class PrintActivity : Activity() {
                 Context.MODE_PRIVATE)
         var numberPicturesPrinted = sharedPreferences.getInt(
                 SampleCameraActivity.numberPicturesPrintedPrefsString, 0)
-        // TODO what happens when we reach 18?
-        numberPicturesPrinted++
-        val editor = sharedPreferences.edit()
-        editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, numberPicturesPrinted)
-        editor.apply()
 
-        copyPhotoToPrintDirectory()
+        if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
+            // TODO: "foto wird übertragen und dann gedruckt"
+            // TODO: progress? (not possible, but indicator)
+
+            numberPicturesPrinted++
+            val editor = sharedPreferences.edit()
+            editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, numberPicturesPrinted)
+            editor.apply()
+
+            copyPhotoToPrintDirectory()
+            showPicturesPrintedDialog()
+        } else {
+            // TODO "not enough pictures in printer"
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setTitle("Kein Fotopapier im Drucker")
+            alertDialogBuilder.setMessage("Bitte Fotopapier nachlegen, sonst kann ich nicht" +
+                    " weitermachen :( Bitte geh zu Thomas Geymayer oder Bernd Kampl, die wissen wie :)")
+            alertDialogBuilder.setPositiveButton("Papier ist nachgelegt", { dialog, which ->
+                val editor = sharedPreferences.edit()
+                editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, 1)
+                editor.apply()
+                copyPhotoToPrintDirectory()
+                showPicturesPrintedDialog()
+            })
+            alertDialogBuilder.setNegativeButton("Abbrechen", { dialog, which ->
+                // nothing
+            })
+            val alertDialog = alertDialogBuilder.create()
+            // Not leave immersive mode when AlertDialog is shown:
+            // https://stackoverflow.com/questions/22794049/how-do-i-maintain-the-immersive-mode-in-dialogs
+            //Set the dialog to not focusable (makes navigation ignore us adding the window)
+            alertDialog.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            // Show the dialog
+            alertDialog.show()
+            // Set the dialog to immersive
+            alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+            // Clear the not focusable flag from the window
+            alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            // TODO "OK, fotopapier ist nachgelegt!"
+        }
+    }
+
+    private fun showPicturesPrintedDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Foto druckt...")
+        alertDialogBuilder.setMessage("Das Foto wird übertragen und dann sofort gedruckt. Der" +
+                " Drucker lässt das Foto am Ende des Druckvorgangs fallen, bitte nicht zu früh" +
+                " daran ziehen. Druck dauert ca. 1 Minute. Du kannst in der Zwischenzeit schon" +
+                " neue Fotos machen :)")
+        alertDialogBuilder.setPositiveButton("OK", { dialog, which ->
+            finish()
+        })
+        val alertDialog = alertDialogBuilder.create()
+        // Not leave immersive mode when AlertDialog is shown:
+        // https://stackoverflow.com/questions/22794049/how-do-i-maintain-the-immersive-mode-in-dialogs
+        //Set the dialog to not focusable (makes navigation ignore us adding the window)
+        alertDialog.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        // Show the dialog
+        alertDialog.show()
+        // Set the dialog to immersive
+        alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+        // Clear the not focusable flag from the window
+        alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
     }
 
     /**
