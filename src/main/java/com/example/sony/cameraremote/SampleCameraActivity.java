@@ -13,7 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -25,6 +28,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -127,6 +131,10 @@ public class SampleCameraActivity extends Activity {
     // boolean that decides if zoom buttons are allowed to be shown or not
     private boolean zoomButtonsAllowedToBeShown = true;
 
+    private TextView xyPicturesLeftTextview;
+    private SharedPreferences sharedPreferences;
+    public static String numberPicturesPrintedPrefsString = "NUMBER_PICTURES_PRINTED";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,6 +163,7 @@ public class SampleCameraActivity extends Activity {
         centerInformationTextview = findViewById(R.id.center_information_textview);
         centerInformationTextview.setVisibility(View.GONE);
         takeFourPicturesButton = findViewById(R.id.take_four_pictures_button);
+        xyPicturesLeftTextview = findViewById(R.id.xy_pictures_left_textview);
 
         mOpenLastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -355,6 +364,7 @@ public class SampleCameraActivity extends Activity {
         });
 
         prepareOpenConnection();
+        setCorrectPicturesLeftTextview();
 
         Log.d(TAG, "onResume() completed.");
     }
@@ -793,6 +803,14 @@ public class SampleCameraActivity extends Activity {
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     };
 
+    private void setCorrectPicturesLeftTextview() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        int numberPicturesPrinted = sharedPreferences.getInt(numberPicturesPrintedPrefsString,
+                0);
+        xyPicturesLeftTextview.setText("Noch " + (18 - numberPicturesPrinted) + " Bilder im Drucker");
+    }
+
     // region Secret Menu --------------------------------------------------------------------------
     int secretMenuClicks = 0;
     Handler mainThreadHandler = new Handler();
@@ -807,11 +825,51 @@ public class SampleCameraActivity extends Activity {
     public void onClickSecretMenuButton(View view) {
         secretMenuClicks++;
         if (secretMenuClicks >= 10) {
-            Toast.makeText(this, "SECRET MENU BUTTON PRESSED", Toast.LENGTH_SHORT).show();
-            // TODO
+            secretMenuClicks = 0;
+            showSecretMenu();
         }
         mainThreadHandler.removeCallbacks(resetSecretMenuClicksRunnable);
         mainThreadHandler.postDelayed(resetSecretMenuClicksRunnable, 300);
+    }
+
+    private void showSecretMenu() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
+                "two", "three"};
+
+        alertDialogBuilder.setTitle("Secret Menu")
+                .setItems(secretMenuItems, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        if (which == 0) {
+                            resetNumberPicturesPrinted();
+                        } else if (which == 1) {
+                            int numberPicturesPrinted = sharedPreferences.getInt(
+                                    numberPicturesPrintedPrefsString, 0);
+                            numberPicturesPrinted++;
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt(numberPicturesPrintedPrefsString, numberPicturesPrinted);
+                            editor.apply();
+                        }
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        alertDialog.show();
+        alertDialog.getWindow().getDecorView().setSystemUiVisibility(
+                getWindow().getDecorView().getSystemUiVisibility());
+        alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
+
+    private void resetNumberPicturesPrinted() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(numberPicturesPrintedPrefsString, 0);
+        editor.apply();
+        setCorrectPicturesLeftTextview();
     }
     // endregion Secret Menu -----------------------------------------------------------------------
 

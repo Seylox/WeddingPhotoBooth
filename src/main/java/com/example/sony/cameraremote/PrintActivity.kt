@@ -112,6 +112,17 @@ class PrintActivity : Activity() {
 
     public fun onClickPrintPicturesButton(view: View) {
         // TODO safe guard and progress
+
+        val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE)
+        var numberPicturesPrinted = sharedPreferences.getInt(
+                SampleCameraActivity.numberPicturesPrintedPrefsString, 0)
+        // TODO what happens when we reach 18?
+        numberPicturesPrinted++
+        val editor = sharedPreferences.edit()
+        editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, numberPicturesPrinted)
+        editor.apply()
+
         copyPhotoToPrintDirectory()
     }
 

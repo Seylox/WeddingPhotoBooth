@@ -28,4 +28,6 @@
     <string name="title_activity_still_content">Still</string>
     <string name="title_activity_movie_content">Movie</string>
 
+    <string name="preference_file_key">bernd.photobox.preference_file_key</string>
+
 </resources>
