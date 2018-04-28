@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -40,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -833,6 +835,16 @@ public class SampleCameraActivity extends Activity {
         }
     }
 
+    private void setPagesLeftInPrinter(int pages) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int picturesPrinted = Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - pages;
+        editor.putInt(numberPicturesPrintedPrefsString, picturesPrinted);
+        editor.apply();
+        setCorrectPicturesLeftTextview();
+    }
+
     private void setDrawHeartInMiddlePrefs(boolean draw) {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
@@ -884,7 +896,7 @@ public class SampleCameraActivity extends Activity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
-                "Set Pictures printed to 18", // TODO make user configurable
+                "Set number of Photo Paper in Printer",
                 drawHeartItem,
                 "Take only one picture next time",
                 "Finish SampleCameraActivity"}; // better would be "switch WiFi"
@@ -897,10 +909,7 @@ public class SampleCameraActivity extends Activity {
                         if (which == 0) {
                             resetNumberPicturesPrinted();
                         } else if (which == 1) {
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putInt(numberPicturesPrintedPrefsString, 18);
-                            editor.apply();
-                            setCorrectPicturesLeftTextview();
+                            showPicturesInPrinterInput();
                         } else if (which == 2) {
                             setDrawHeartInMiddlePrefs(!getDrawHeartInMiddleFromPrefs());
                         } else if (which == 3) {
@@ -921,7 +930,36 @@ public class SampleCameraActivity extends Activity {
     }
 
     private void showPicturesInPrinterInput() {
-        // TODO
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View numberInPhotoPrinterDialog = inflater.inflate(R.layout.dialog_photos_printed,
+                null);
+        alertDialogBuilder.setView(numberInPhotoPrinterDialog)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO
+                        EditText pagesLeftInPrinterEdittext = numberInPhotoPrinterDialog
+                                .findViewById(R.id.pages_left_in_printer_edittext);
+                        int pagesLeftNumber = Integer.parseInt(
+                                pagesLeftInPrinterEdittext.getText().toString());
+                        setPagesLeftInPrinter(pagesLeftNumber);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // nothing
+                    }
+                });
+        alertDialogBuilder.setTitle("Set Number of Pictures in Printer");
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        alertDialog.show();
+        alertDialog.getWindow().getDecorView().setSystemUiVisibility(
+                getWindow().getDecorView().getSystemUiVisibility());
+        alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
     private void resetNumberPicturesPrinted() {
