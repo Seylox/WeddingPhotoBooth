@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -86,8 +87,27 @@ class PrintActivity : Activity() {
     }
 
     public fun onClickDeletePicturesButton(view: View) {
-        // TODO: ask with AlertDialog...
-        finish()
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setMessage("Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.")
+        alertDialogBuilder.setTitle("Foto wirklich löschen?")
+        alertDialogBuilder.setPositiveButton("Löschen", { dialog, which ->
+            finish()
+        })
+        alertDialogBuilder.setNegativeButton("Abbrechen", { dialog, which ->
+            // nothing
+        })
+        val alertDialog = alertDialogBuilder.create()
+        // Not leave immersive mode when AlertDialog is shown:
+        // https://stackoverflow.com/questions/22794049/how-do-i-maintain-the-immersive-mode-in-dialogs
+        //Set the dialog to not focusable (makes navigation ignore us adding the window)
+        alertDialog.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        // Show the dialog
+        alertDialog.show()
+        // Set the dialog to immersive
+        alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+        // Clear the not focusable flag from the window
+        alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
     }
 
     public fun onClickPrintPicturesButton(view: View) {

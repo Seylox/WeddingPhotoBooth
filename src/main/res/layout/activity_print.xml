@@ -28,6 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:onClick="onClickPrintPicturesButton"
+        android:visibility="gone"
         />
 
     <Button
@@ -40,6 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/print_pictures_button"
         android:onClick="onClickDeletePicturesButton"
+        android:visibility="gone"
         />
 
     <RelativeLayout
