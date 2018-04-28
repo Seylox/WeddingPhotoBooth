@@ -547,7 +547,7 @@ public class SampleCameraActivity extends Activity {
             public void onTick(long millisUntilFinished) {
                 if (secondsRemaining > 0) {
                     centerInformationTextview.setVisibility(View.VISIBLE);
-                    centerInformationTextview.setText("Wir machen jetzt 4 Fotos!");
+                    centerInformationTextview.setText(R.string.wir_machen_jetzt_4_fotos_);
                 }
                 secondsRemaining--;
             }
@@ -575,7 +575,7 @@ public class SampleCameraActivity extends Activity {
             public void onTick(long millisUntilFinished) {
                 if (secondsRemaining > 0) {
                     centerInformationTextview.setVisibility(View.VISIBLE);
-                    centerInformationTextview.setText("Wir machen jetzt 4 Fotos!");
+                    centerInformationTextview.setText(R.string.wir_machen_jetzt_4_fotos_);
                 }
                 secondsRemaining--;
             }
@@ -824,9 +824,13 @@ public class SampleCameraActivity extends Activity {
                 Context.MODE_PRIVATE);
         int numberPicturesPrinted = sharedPreferences.getInt(numberPicturesPrintedPrefsString,
                 0);
-        xyPicturesLeftTextview.setText("Noch " +
-                (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted) +
-                " Bilder im Drucker");
+        if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
+            xyPicturesLeftTextview.setText("Noch " +
+                    (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted) +
+                    " Bilder im Drucker");
+        } else {
+            xyPicturesLeftTextview.setText(R.string.bitte_fotopapier_nachlegen_);
+        }
     }
 
     private void setDrawHeartInMiddlePrefs(boolean draw) {

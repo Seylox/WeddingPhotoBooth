@@ -172,7 +172,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerInParent="true"
-            android:text="Touch\nMe!"
+            android:text="@string/touch_me_"
             android:textSize="40sp"
             android:textAllCaps="false"
             android:textColor="@color/white"

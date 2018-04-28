@@ -89,12 +89,12 @@ class PrintActivity : Activity() {
 
     public fun onClickDeletePicturesButton(view: View) {
         val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setTitle("Foto wirklich löschen?")
-        alertDialogBuilder.setMessage("Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.")
-        alertDialogBuilder.setPositiveButton("Löschen", { dialog, which ->
+        alertDialogBuilder.setTitle(getString(R.string.foto_wirkilch_loeschen_))
+        alertDialogBuilder.setMessage(getString(R.string.moechtest_du_das_foto_wirklich_loeschen__es_wird_dann_nicht_gedruckt_))
+        alertDialogBuilder.setPositiveButton(getString(R.string.loeschen), { dialog, which ->
             finish()
         })
-        alertDialogBuilder.setNegativeButton("Abbrechen", { dialog, which ->
+        alertDialogBuilder.setNegativeButton(getString(R.string.abbrechen), { dialog, which ->
             // nothing
         })
         val alertDialog = alertDialogBuilder.create()
@@ -133,7 +133,7 @@ class PrintActivity : Activity() {
         } else {
             // TODO "not enough pictures in printer"
             val alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setTitle("Kein Fotopapier im Drucker")
+            alertDialogBuilder.setTitle(getString(R.string.kein_fotopapier_im_drucker))
             alertDialogBuilder.setMessage("Bitte Fotopapier nachlegen, sonst kann ich nicht" +
                     " weitermachen :( Bitte geh zu Thomas Geymayer oder Bernd Kampl, die wissen wie :)")
             alertDialogBuilder.setPositiveButton("Papier ist nachgelegt", { dialog, which ->
@@ -143,7 +143,7 @@ class PrintActivity : Activity() {
                 copyPhotoToPrintDirectory()
                 showPicturesPrintedDialog()
             })
-            alertDialogBuilder.setNegativeButton("Abbrechen", { dialog, which ->
+            alertDialogBuilder.setNegativeButton(getString(R.string.abbrechen), { dialog, which ->
                 // nothing
             })
             val alertDialog = alertDialogBuilder.create()
@@ -164,12 +164,12 @@ class PrintActivity : Activity() {
 
     private fun showPicturesPrintedDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setTitle("Foto druckt...")
+        alertDialogBuilder.setTitle(getString(R.string.foto_druckt___))
         alertDialogBuilder.setMessage("Das Foto wird übertragen und dann sofort gedruckt. Der" +
                 " Drucker lässt das Foto am Ende des Druckvorgangs fallen, bitte nicht zu früh" +
                 " daran ziehen. Druck dauert ca. 1 Minute. Du kannst in der Zwischenzeit schon" +
                 " neue Fotos machen :)")
-        alertDialogBuilder.setPositiveButton("OK", { dialog, which ->
+        alertDialogBuilder.setPositiveButton(getString(R.string.ok), { dialog, which ->
             finish()
         })
         val alertDialog = alertDialogBuilder.create()
