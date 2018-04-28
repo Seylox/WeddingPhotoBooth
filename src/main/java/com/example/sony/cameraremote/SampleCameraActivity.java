@@ -496,6 +496,7 @@ public class SampleCameraActivity extends Activity {
         mButtonZoomIn.setVisibility(View.VISIBLE);
         mButtonZoomOut.setVisibility(View.VISIBLE);
         takeFourPicturesButton.setVisibility(View.VISIBLE);
+        xyPicturesLeftTextview.setVisibility(View.VISIBLE);
     }
 
     private void hideButtons() {
@@ -503,6 +504,7 @@ public class SampleCameraActivity extends Activity {
         mButtonZoomIn.setVisibility(View.GONE);
         mButtonZoomOut.setVisibility(View.GONE);
         takeFourPicturesButton.setVisibility(View.GONE);
+        xyPicturesLeftTextview.setVisibility(View.GONE);
     }
 
     /**
