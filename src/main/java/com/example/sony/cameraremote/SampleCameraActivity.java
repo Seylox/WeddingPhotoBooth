@@ -438,7 +438,7 @@ public class SampleCameraActivity extends Activity {
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
             Bitmap regineBerndHeart = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.regine_bernd_herz);
+                    R.drawable.regine_bernd_herz_stronger);
             regineBerndHeart = Bitmap.createScaledBitmap(regineBerndHeart,
                     (regineBerndHeart.getWidth()/4),
                     (regineBerndHeart.getHeight()/4),
@@ -886,6 +886,7 @@ public class SampleCameraActivity extends Activity {
         CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
                 "Set Pictures printed to 18", // TODO make user configurable
                 drawHeartItem,
+                "Take only one picture next time",
                 "Finish SampleCameraActivity"}; // better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
@@ -903,6 +904,8 @@ public class SampleCameraActivity extends Activity {
                         } else if (which == 2) {
                             setDrawHeartInMiddlePrefs(!getDrawHeartInMiddleFromPrefs());
                         } else if (which == 3) {
+                            // TODO take only one picture next time
+                        } else {
                             finish();
                         }
                     }
