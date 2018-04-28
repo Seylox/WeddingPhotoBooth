@@ -134,6 +134,7 @@ public class SampleCameraActivity extends Activity {
     private TextView xyPicturesLeftTextview;
     private SharedPreferences sharedPreferences;
     public static String numberPicturesPrintedPrefsString = "NUMBER_PICTURES_PRINTED";
+    public static String drawHeartInMiddlePrefsString = "DRAW_HEART_IN_MIDDLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -432,6 +433,19 @@ public class SampleCameraActivity extends Activity {
         canvas.drawBitmap(bitmap2, bitmap1.getWidth(), 0, paint);
         canvas.drawBitmap(bitmap3, 0, bitmap1.getHeight(), paint);
         canvas.drawBitmap(bitmap4, bitmap3.getWidth(), bitmap2.getHeight(), paint);
+
+        // Add drawable in the middle if option is selected
+        if (getDrawHeartInMiddleFromPrefs()) {
+            Bitmap regineBerndHeart = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.regine_bernd_herz);
+            regineBerndHeart = Bitmap.createScaledBitmap(regineBerndHeart,
+                    (regineBerndHeart.getWidth()/4),
+                    (regineBerndHeart.getHeight()/4),
+                    true);
+            int heartLeft = bitmap1.getWidth() - (regineBerndHeart.getWidth()/2);
+            int heartTop = bitmap1.getHeight() - (regineBerndHeart.getHeight()/2);
+            canvas.drawBitmap(regineBerndHeart, heartLeft, heartTop, paint);
+        }
 
         // TODO: create filename such as DSC03630-03633.JPG
         // DSC03630.JPG
@@ -803,6 +817,7 @@ public class SampleCameraActivity extends Activity {
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     };
 
+    // region Set & Get SharedPrefs Strings --------------------------------------------------------
     private void setCorrectPicturesLeftTextview() {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
@@ -810,6 +825,24 @@ public class SampleCameraActivity extends Activity {
                 0);
         xyPicturesLeftTextview.setText("Noch " + (18 - numberPicturesPrinted) + " Bilder im Drucker");
     }
+
+    private void setDrawHeartInMiddlePrefs(boolean draw) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(drawHeartInMiddlePrefsString, draw);
+        editor.apply();
+        String heartStatusToast = draw ? "Drawing heart in the middle" : "Not drawing heart in middle";
+        Toast.makeText(this, heartStatusToast, Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private boolean getDrawHeartInMiddleFromPrefs() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(drawHeartInMiddlePrefsString, false);
+    }
+    // endregion Set & Get SharedPrefs Strings -----------------------------------------------------
 
     // region Secret Menu --------------------------------------------------------------------------
     int secretMenuClicks = 0;
@@ -833,10 +866,19 @@ public class SampleCameraActivity extends Activity {
     }
 
     private void showSecretMenu() {
+        boolean drawHeartInMiddle = getDrawHeartInMiddleFromPrefs();
+        String drawHeartItem;
+        if (drawHeartInMiddle) {
+            drawHeartItem = "Drawing heart in middle -> select to not draw";
+        } else {
+            drawHeartItem = "Not drawing heart in middle -> select to draw";
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
                 "Increase Pictures Printed by one",
+                drawHeartItem,
                 "Finish SampleCameraActivity"}; // better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
@@ -854,6 +896,8 @@ public class SampleCameraActivity extends Activity {
                             editor.putInt(numberPicturesPrintedPrefsString, numberPicturesPrinted);
                             editor.apply();
                         } else if (which == 2) {
+                            setDrawHeartInMiddlePrefs(!getDrawHeartInMiddleFromPrefs());
+                        } else if (which == 3) {
                             finish();
                         }
                     }

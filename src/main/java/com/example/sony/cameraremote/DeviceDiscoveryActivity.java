@@ -193,8 +193,9 @@ public class DeviceDiscoveryActivity extends Activity {
      */
     private void launchSampleActivity(ServerDevice device) {
         // Go to CameraSampleActivity.
-        Toast.makeText(DeviceDiscoveryActivity.this, device.getFriendlyName(), Toast.LENGTH_SHORT) //
-                .show();
+//        Toast.makeText(DeviceDiscoveryActivity.this, "launchSampleActivity: "
+//                + device.getFriendlyName(), Toast.LENGTH_SHORT)
+//                .show();
 
         // Set target ServerDevice instance to control in Activity.
         SampleApplication app = (SampleApplication) getApplication();
