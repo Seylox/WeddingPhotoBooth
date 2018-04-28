@@ -180,7 +180,17 @@
             android:onClick="onClickTakeFourPicturesButton"
             />
 
-
+        <Button
+            android:id="@+id/secret_menu_button"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:visibility="visible"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:onClick="onClickSecretMenuButton"
+            android:background="@null"
+            />
     </RelativeLayout>
 
 </merge>

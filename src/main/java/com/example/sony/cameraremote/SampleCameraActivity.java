@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -37,6 +38,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -790,6 +792,28 @@ public class SampleCameraActivity extends Activity {
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     };
+
+    // region Secret Menu --------------------------------------------------------------------------
+    int secretMenuClicks = 0;
+    Handler mainThreadHandler = new Handler();
+
+    Runnable resetSecretMenuClicksRunnable = new Runnable() {
+        @Override
+        public void run() {
+            secretMenuClicks = 0;
+        }
+    };
+
+    public void onClickSecretMenuButton(View view) {
+        secretMenuClicks++;
+        if (secretMenuClicks >= 10) {
+            Toast.makeText(this, "SECRET MENU BUTTON PRESSED", Toast.LENGTH_SHORT).show();
+            // TODO
+        }
+        mainThreadHandler.removeCallbacks(resetSecretMenuClicksRunnable);
+        mainThreadHandler.postDelayed(resetSecretMenuClicksRunnable, 300);
+    }
+    // endregion Secret Menu -----------------------------------------------------------------------
 
     // code below is not used for photo box --------------------------------------------------------
     private void prepareOpenConnection() {
