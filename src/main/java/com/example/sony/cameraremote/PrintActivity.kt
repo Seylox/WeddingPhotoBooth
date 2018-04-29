@@ -94,6 +94,7 @@ class PrintActivity : Activity() {
             editor.putInt(SampleCameraActivity.numberPicturesPrintedPrefsString, numberPicturesPrinted)
             editor.apply()
 
+            // copying file to /sdcard/Android/data/com.example.sony.cameraremote/files/pictures/print
             val printPathName = applicationContext
                     .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     .path + "/print/"
