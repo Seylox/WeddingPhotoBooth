@@ -156,12 +156,10 @@ class PrintActivity : Activity() {
             copyPhotoToPrintDirectory()
             showPicturesPrintedDialog()
         } else {
-            // TODO "not enough pictures in printer"
             val alertDialogBuilder = AlertDialog.Builder(this)
             alertDialogBuilder.setTitle(getString(R.string.kein_fotopapier_im_drucker))
-            alertDialogBuilder.setMessage("Bitte Fotopapier nachlegen, sonst kann ich nicht" +
-                    " weitermachen :( Bitte geh zu Thomas Geymayer oder Bernd Kampl, die wissen wie :)")
-            alertDialogBuilder.setPositiveButton("Papier ist nachgelegt", { dialog, which ->
+            alertDialogBuilder.setMessage(getString(R.string.empty_dialog_message))
+            alertDialogBuilder.setPositiveButton(getString(R.string.papier_ist_nachgelegt), { dialog, which ->
                 copyPhotoToPrintDirectory()
                 showPicturesPrintedDialog()
             })
@@ -180,17 +178,13 @@ class PrintActivity : Activity() {
             alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
             // Clear the not focusable flag from the window
             alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
-            // TODO "OK, fotopapier ist nachgelegt!"
         }
     }
 
     private fun showPicturesPrintedDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setTitle(getString(R.string.foto_druckt___))
-        alertDialogBuilder.setMessage("Das Foto wird übertragen und dann sofort gedruckt. Der" +
-                " Drucker lässt das Foto am Ende des Druckvorgangs fallen, bitte nicht zu früh" +
-                " daran ziehen. Druck dauert ca. 1 Minute. Du kannst in der Zwischenzeit schon" +
-                " neue Fotos machen :)")
+        alertDialogBuilder.setMessage(getString(R.string.druck_dialog_message))
         alertDialogBuilder.setPositiveButton(getString(R.string.ok), { dialog, which ->
             finish()
         })
