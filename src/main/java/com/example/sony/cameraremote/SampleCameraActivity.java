@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -145,6 +146,7 @@ public class SampleCameraActivity extends Activity {
     private SharedPreferences sharedPreferences;
     public static String numberPicturesPrintedPrefsString = "NUMBER_PICTURES_PRINTED";
     public static String drawHeartInMiddlePrefsString = "DRAW_HEART_IN_MIDDLE";
+    public static String drawLinesInMiddlePrefsString = "DRAW_LINES_IN_MIDDLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -463,6 +465,23 @@ public class SampleCameraActivity extends Activity {
         canvas.drawBitmap(bitmap2, bitmap1.getWidth(), 0, paint);
         canvas.drawBitmap(bitmap3, 0, bitmap1.getHeight(), paint);
         canvas.drawBitmap(bitmap4, bitmap3.getWidth(), bitmap2.getHeight(), paint);
+
+        // Add Lines in the middle of the Image
+        if (getDrawLinesInMiddleFromPrefs()) {
+            Paint blackPaint = new Paint();
+            blackPaint.setColor(Color.BLACK);
+            blackPaint.setStrokeWidth(4.0f);
+            canvas.drawLine(0,
+                    (bitmap1.getHeight()),
+                    (bitmap1.getWidth()*2),
+                    (bitmap1.getHeight()),
+                    blackPaint);
+            canvas.drawLine((bitmap1.getWidth()),
+                    0,
+                    (bitmap1.getWidth()),
+                    (bitmap1.getHeight()*2),
+                    blackPaint);
+        }
 
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
@@ -896,6 +915,23 @@ public class SampleCameraActivity extends Activity {
                 Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(drawHeartInMiddlePrefsString, false);
     }
+
+    private void setDrawLinesInMiddlePrefs(boolean draw) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(drawLinesInMiddlePrefsString, draw);
+        editor.apply();
+        String lineStatusToast = draw ? "Drawing lines in the middle" : "Not drawing lines in middle";
+        Toast.makeText(this, lineStatusToast, Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private boolean getDrawLinesInMiddleFromPrefs() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(drawLinesInMiddlePrefsString, false);
+    }
     // endregion Set & Get SharedPrefs Strings -----------------------------------------------------
 
     // region Secret Menu --------------------------------------------------------------------------
@@ -928,13 +964,23 @@ public class SampleCameraActivity extends Activity {
             drawHeartItem = "Not drawing heart in middle -> select to draw";
         }
 
+        boolean drawLinesInMiddle = getDrawLinesInMiddleFromPrefs();
+        String drawLinesItem;
+        if (drawLinesInMiddle) {
+            drawLinesItem = "Drawing lines in middle -> select to not draw";
+        } else {
+            drawLinesItem = "Not drawing lines in middle -> select to draw";
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-        CharSequence[] secretMenuItems = {"Reset Number Pictures Printed",
-                "Set number of Photo Paper in Printer",
-                drawHeartItem,
-                "Take only one picture next time",
-                "Finish SampleCameraActivity"}; // better would be "switch WiFi"
+        CharSequence[] secretMenuItems = {
+                "Reset Number Pictures Printed",        // 0
+                "Set number of Photo Paper in Printer", // 1
+                drawHeartItem,                          // 2
+                drawLinesItem,                          // 3
+                "Take only one picture next time",      // 4
+                "Finish SampleCameraActivity"}; // else; better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
                 .setItems(secretMenuItems, new DialogInterface.OnClickListener() {
@@ -948,6 +994,8 @@ public class SampleCameraActivity extends Activity {
                         } else if (which == 2) {
                             setDrawHeartInMiddlePrefs(!getDrawHeartInMiddleFromPrefs());
                         } else if (which == 3) {
+                            setDrawLinesInMiddlePrefs(!getDrawLinesInMiddleFromPrefs());
+                        } else if (which == 4) {
                             nextShootIsOnlyOnePicture = true;
                         } else {
                             finish();
