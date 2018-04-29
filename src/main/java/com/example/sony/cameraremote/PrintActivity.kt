@@ -17,6 +17,8 @@ import timber.log.Timber
 import java.io.File
 
 
+
+
 class PrintActivity : Activity() {
 
     companion object {
@@ -74,6 +76,13 @@ class PrintActivity : Activity() {
 
         Picasso.with(this).isLoggingEnabled = true
         Picasso.with(this).load(file).into(mImageView)
+
+        // Copy file to /sdcard/Pictures/WeddingPhotoBooth/DSC12345-12348.JPG
+        val externalPicturesPath = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES)
+        val externalPicturesPhotoBoothPath = File(externalPicturesPath, "WeddingPhotoBooth")
+        externalPicturesPhotoBoothPath.mkdirs()
+        FileUtils.copyFileOrDirectory(completeFileName, externalPicturesPhotoBoothPath.path)
     }
 
     private fun copyPhotoToPrintDirectory() {
