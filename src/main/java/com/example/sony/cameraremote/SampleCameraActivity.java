@@ -571,25 +571,31 @@ public class SampleCameraActivity extends Activity {
      */
     public void onClickTakeFourPicturesButton(View view) {
         hideButtons();
-        currentPicNumBeingTaken = 1;
-        secondsRemaining = 3;
-        new CountDownTimer(3000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (secondsRemaining > 0) {
-                    centerInformationTextview.setVisibility(View.VISIBLE);
-                    centerInformationTextview.setText(R.string.wir_machen_jetzt_4_fotos_);
-                }
-                secondsRemaining--;
-            }
 
-            @Override
-            public void onFinish() {
-                centerInformationTextview.setVisibility(View.GONE);
-                singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
-                countDownAndTakePicture();
-            }
-        }.start();
+        if (nextShootIsOnlyOnePicture) {
+            nextShootIsOnlyOnePicture = false;
+            takeOnePictureOnly();
+        } else {
+            currentPicNumBeingTaken = 1;
+            secondsRemaining = 3;
+            new CountDownTimer(3000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (secondsRemaining > 0) {
+                        centerInformationTextview.setVisibility(View.VISIBLE);
+                        centerInformationTextview.setText(R.string.wir_machen_jetzt_4_fotos_);
+                    }
+                    secondsRemaining--;
+                }
+
+                @Override
+                public void onFinish() {
+                    centerInformationTextview.setVisibility(View.GONE);
+                    singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
+                    countDownAndTakePicture();
+                }
+            }.start();
+        }
     }
 
     /**
@@ -942,7 +948,7 @@ public class SampleCameraActivity extends Activity {
                         } else if (which == 2) {
                             setDrawHeartInMiddlePrefs(!getDrawHeartInMiddleFromPrefs());
                         } else if (which == 3) {
-                            // TODO take only one picture next time
+                            nextShootIsOnlyOnePicture = true;
                         } else {
                             finish();
                         }
@@ -967,7 +973,6 @@ public class SampleCameraActivity extends Activity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO
                         EditText pagesLeftInPrinterEdittext = numberInPhotoPrinterDialog
                                 .findViewById(R.id.pages_left_in_printer_edittext);
                         int pagesLeftNumber = Integer.parseInt(
@@ -998,6 +1003,152 @@ public class SampleCameraActivity extends Activity {
         setCorrectPicturesLeftTextview();
     }
     // endregion Secret Menu -----------------------------------------------------------------------
+
+    // region Only one photo taken -----------------------------------------------------------------
+    boolean nextShootIsOnlyOnePicture = false;
+
+    public void takeOnePictureOnly() {
+        secondsRemaining = 3;
+        new CountDownTimer(3000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (secondsRemaining > 0) {
+                    centerInformationTextview.setVisibility(View.VISIBLE);
+                    centerInformationTextview.setText("Wir machen jetzt 1 Foto!");
+                }
+                secondsRemaining--;
+            }
+
+            @Override
+            public void onFinish() {
+                centerInformationTextview.setVisibility(View.GONE);
+                singleThreadExecutor.submit(setOriginalPostviewImageSizeThread);
+                countDownAndTakeOnlyOnePicture();
+            }
+        }.start();
+    }
+
+    private void countDownAndTakeOnlyOnePicture() {
+        secondsRemaining = 6;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(6000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        if (secondsRemaining > 5) {
+                            centerInformationTextview.setVisibility(View.VISIBLE);
+                            centerInformationTextview.setText("Einziges Foto in...");
+                        } else {
+                            centerInformationTextview.setText(Integer.toString(secondsRemaining));
+                        }
+                        secondsRemaining--;
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        centerInformationTextview.setVisibility(View.GONE);
+                        singleThreadExecutor.submit(takeAndFetchOnlyOnePictureThread);
+                    }
+                }.start();
+            }
+        });
+    }
+
+    private Thread takeAndFetchOnlyOnePictureThread = new Thread() {
+        @Override
+        public void run() {
+            try {
+                JSONObject replyJson = mRemoteApi.actTakePicture();
+                JSONArray resultsObj = replyJson.getJSONArray("result");
+                JSONArray imageUrlsObj = resultsObj.getJSONArray(0);
+                String postImageUrl = null;
+                if (1 <= imageUrlsObj.length()) {
+                    postImageUrl = imageUrlsObj.getString(0);
+                }
+                if (postImageUrl == null) {
+                    Log.w(TAG, "takeAndFetchOnlyOnePictureThread: post image URL is null.");
+                    DisplayHelper.toast(getApplicationContext(),
+                            R.string.msg_error_take_picture);
+                    return;
+                }
+                // Show progress indicator
+                DisplayHelper.setProgressIndicator(SampleCameraActivity.this, true);
+
+                URL url = new URL(postImageUrl);
+                mOpenLastUrl = postImageUrl;
+
+                String path = url.getPath();
+                mLastTakenPhotoName = path.substring(path.lastIndexOf('/') + 1);
+
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Picasso.with(SampleCameraActivity.this).load(mOpenLastUrl)
+                                .into(targetWithOnlyOnePicture);
+                    }
+                });
+            } catch (IOException e) {
+                Log.w(TAG, "IOException while closing slicer: " + e.getMessage());
+                DisplayHelper.toast(getApplicationContext(), //
+                        R.string.msg_error_take_picture);
+            } catch (JSONException e) {
+                Log.w(TAG, "JSONException while closing slicer");
+                DisplayHelper.toast(getApplicationContext(), //
+                        R.string.msg_error_take_picture);
+            } finally {
+                DisplayHelper.setProgressIndicator(SampleCameraActivity.this, false);
+            }
+        }
+    };
+
+    private Target targetWithOnlyOnePicture = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            final String residingFolder = getApplicationContext()
+                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    .getPath();
+            final File file = new File(
+                    getApplicationContext()
+                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                            .getPath()
+                            + "/" + mLastTakenPhotoName);
+            try {
+                file.createNewFile();
+                FileOutputStream ostream = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                ostream.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = PrintActivity.Companion.buildPrintStartActivityIntent(
+                            SampleCameraActivity.this,
+                            file.getPath(),
+                            residingFolder,
+                            mLastTakenPhotoName);
+                    startActivityForResult(intent, 12345);
+                }
+            });
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
+    // endregion Only one photo taken --------------------------------------------------------------
 
     // code below is not used for photo box --------------------------------------------------------
     private void prepareOpenConnection() {
