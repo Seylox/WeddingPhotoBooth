@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import com.example.sony.cameraremote.utils.Constants
 import com.example.sony.cameraremote.utils.FileUtils
@@ -155,9 +156,11 @@ class PrintActivity : Activity() {
         val numberPicturesPrinted = sharedPreferences.getInt(
                 Constants.numberPicturesPrintedPrefsString, 0)
         val numberPrintsLeft = sharedPreferences.getInt(
-                Constants.numberPrintsLeftInCartridgePrefsString, 0) // TODO
+                Constants.numberPrintsLeftInCartridgePrefsString, 0)
 
-        if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
+        val numberPicturesLeft = Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted
+
+        if (numberPicturesLeft > 0 && numberPrintsLeft > 0) {
             // TODO: "foto wird übertragen und dann gedruckt"
             // TODO: progress? (not possible, but indicator)
 
@@ -166,10 +169,11 @@ class PrintActivity : Activity() {
         } else {
             val alertDialogBuilder = AlertDialog.Builder(this)
             alertDialogBuilder.setTitle(getString(R.string.kein_fotopapier_im_drucker))
-            alertDialogBuilder.setMessage(getString(R.string.empty_dialog_message))
-            alertDialogBuilder.setPositiveButton(getString(R.string.papier_ist_nachgelegt), { dialog, which ->
-                copyPhotoToPrintDirectory()
-                showPicturesPrintedDialog()
+            alertDialogBuilder.setMessage(getString(R.string.empty_dialog_message) +
+                    "\n\n\nIch habe ${numberPicturesLeft} Fotos in der Lade" +
+                    "\nIch habe ${numberPrintsLeft} Drucke in der Cartridge")
+            alertDialogBuilder.setPositiveButton(getString(R.string.einstellungen), { dialog, which ->
+                showSetPhotosPrintsDialog()
             })
             alertDialogBuilder.setNegativeButton(getString(R.string.abbrechen), { dialog, which ->
                 // nothing
@@ -208,6 +212,65 @@ class PrintActivity : Activity() {
         alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
         // Clear the not focusable flag from the window
         alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+    }
+
+    private fun showSetPhotosPrintsDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val paperAndPrintsDialog = inflater.inflate(R.layout.dialog_paper_cartridge,
+                null)
+
+        val pagesLeftInPrinterEdittext = paperAndPrintsDialog
+                .findViewById<EditText>(R.id.pages_left_in_printer_edittext)
+        val printsLeftInCartridgeEdittext = paperAndPrintsDialog
+                .findViewById<EditText>(R.id.prints_left_in_cartridge_edittext)
+
+        val sharedPreferences = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val numberPicturesPrinted = sharedPreferences.getInt(
+                Constants.numberPicturesPrintedPrefsString, 0)
+        val numberPrintsLeft = sharedPreferences.getInt(
+                Constants.numberPrintsLeftInCartridgePrefsString, 0)
+        val numberPagesLeft = Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted
+
+        pagesLeftInPrinterEdittext.setText(numberPagesLeft.toString())
+        printsLeftInCartridgeEdittext.setText(numberPrintsLeft.toString())
+
+
+        alertDialogBuilder.setView(paperAndPrintsDialog)
+                .setPositiveButton(getString(R.string.ok)) { dialog, which ->
+
+                    val pagesLeftNumber = try {
+                        Integer.parseInt(
+                                pagesLeftInPrinterEdittext.text.toString())
+                    } catch (e: Exception) {
+                        0
+                    }
+
+                    val printsLeftNumber = try {
+                        Integer.parseInt(
+                                printsLeftInCartridgeEdittext.text.toString())
+                    } catch (e: Exception) {
+                        0
+                    }
+
+                    val picturesPrintedNumber = Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - pagesLeftNumber
+
+                    val editor = sharedPreferences.edit()
+                    editor.putInt(Constants.numberPicturesPrintedPrefsString, picturesPrintedNumber)
+                    editor.putInt(Constants.numberPrintsLeftInCartridgePrefsString, printsLeftNumber)
+                    editor.apply()
+                }
+                .setNegativeButton("Cancel") { dialog, which ->
+                    // nothing
+                }
+        alertDialogBuilder.setTitle("Anzahl Fotopapier / Drucke setzen")
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.window!!.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        alertDialog.show()
+        alertDialog.window!!.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+        alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
     }
 
     /**

@@ -1082,7 +1082,6 @@ public class SampleCameraActivity extends Activity {
                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO
                         EditText printsLeftInCartridgeEdittext = printsInCartridgeDialog
                                 .findViewById(R.id.prints_left_in_cartridge_edittext);
                         int printsLeftNumber = Integer.parseInt(
