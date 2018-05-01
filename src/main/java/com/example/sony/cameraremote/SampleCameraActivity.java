@@ -143,6 +143,7 @@ public class SampleCameraActivity extends Activity {
     private boolean zoomButtonsAllowedToBeShown = true;
 
     private TextView xyPicturesLeftTextview;
+    private TextView xyPrintsLeftInCartridgeTextview;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -174,6 +175,7 @@ public class SampleCameraActivity extends Activity {
         centerInformationTextview.setVisibility(View.GONE);
         takeFourPicturesButton = findViewById(R.id.take_four_pictures_button);
         xyPicturesLeftTextview = findViewById(R.id.xy_pictures_left_textview);
+        xyPrintsLeftInCartridgeTextview = findViewById(R.id.xy_prints_left_in_cartridge_textview);
 
         mOpenLastButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -488,8 +490,12 @@ public class SampleCameraActivity extends Activity {
                     (regineBerndHeart.getWidth()/4),
                     (regineBerndHeart.getHeight()/4),
                     true);
+            // heart in the middle
             int heartLeft = bitmap1.getWidth() - (regineBerndHeart.getWidth()/2);
             int heartTop = bitmap1.getHeight() - (regineBerndHeart.getHeight()/2);
+            // heart in bottom right corner
+//            int heartLeft = (bitmap1.getWidth()*2) - (regineBerndHeart.getWidth() + (regineBerndHeart.getWidth()/5));
+//            int heartTop = (bitmap1.getHeight()*2) - (regineBerndHeart.getHeight() + (regineBerndHeart.getHeight()/5));
             canvas.drawBitmap(regineBerndHeart, heartLeft, heartTop, paint);
         }
 
@@ -540,6 +546,7 @@ public class SampleCameraActivity extends Activity {
         mButtonZoomOut.setVisibility(View.VISIBLE);
         takeFourPicturesButton.setVisibility(View.VISIBLE);
         xyPicturesLeftTextview.setVisibility(View.VISIBLE);
+        xyPrintsLeftInCartridgeTextview.setVisibility(View.VISIBLE);
     }
 
     private void hideButtons() {
@@ -548,6 +555,7 @@ public class SampleCameraActivity extends Activity {
         mButtonZoomOut.setVisibility(View.GONE);
         takeFourPicturesButton.setVisibility(View.GONE);
         xyPicturesLeftTextview.setVisibility(View.GONE);
+        xyPrintsLeftInCartridgeTextview.setVisibility(View.GONE);
     }
 
     /**
@@ -884,6 +892,15 @@ public class SampleCameraActivity extends Activity {
         } else {
             xyPicturesLeftTextview.setText(R.string.bitte_fotopapier_nachlegen_);
         }
+
+        int numberPrintsLeftInCartridge = sharedPreferences.getInt(
+                Constants.numberPrintsLeftInCartridgePrefsString, 0);
+        if (numberPrintsLeftInCartridge > 0) {
+            xyPrintsLeftInCartridgeTextview.setText("Noch " + numberPrintsLeftInCartridge +
+            " Drucke in Cartridge");
+        } else {
+            xyPrintsLeftInCartridgeTextview.setText("BITTE CARTRIDGE WECHSELN");
+        }
     }
 
     private void setPagesLeftInPrinter(int pages) {
@@ -929,6 +946,21 @@ public class SampleCameraActivity extends Activity {
                 Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(Constants.drawLinesInMiddlePrefsString, false);
     }
+
+    private void setNumberPrintsLeftInCartridge(int numPrintsLeft) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Constants.numberPrintsLeftInCartridgePrefsString, numPrintsLeft);
+        editor.apply();
+        setCorrectPicturesLeftTextview();
+    }
+
+    private int getNumberPrintsLeftInCartridge() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(Constants.numberPrintsLeftInCartridgePrefsString, 54);
+    }
     // endregion Set & Get SharedPrefs Strings -----------------------------------------------------
 
     // region Secret Menu --------------------------------------------------------------------------
@@ -972,7 +1004,7 @@ public class SampleCameraActivity extends Activity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         CharSequence[] secretMenuItems = {
-                "Reset Number Pictures Printed",        // 0
+                "Set number of prints left in cartridge",        // 0
                 "Set number of Photo Paper in Printer", // 1
                 drawHeartItem,                          // 2
                 drawLinesItem,                          // 3
@@ -985,7 +1017,7 @@ public class SampleCameraActivity extends Activity {
                         // The 'which' argument contains the index position
                         // of the selected item
                         if (which == 0) {
-                            resetNumberPicturesPrinted();
+                            showPrintsInCartridgeInput();
                         } else if (which == 1) {
                             showPicturesInPrinterInput();
                         } else if (which == 2) {
@@ -1015,7 +1047,7 @@ public class SampleCameraActivity extends Activity {
         final View numberInPhotoPrinterDialog = inflater.inflate(R.layout.dialog_photos_printed,
                 null);
         alertDialogBuilder.setView(numberInPhotoPrinterDialog)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText pagesLeftInPrinterEdittext = numberInPhotoPrinterDialog
@@ -1041,11 +1073,37 @@ public class SampleCameraActivity extends Activity {
         alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
-    private void resetNumberPicturesPrinted() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(Constants.numberPicturesPrintedPrefsString, 0);
-        editor.apply();
-        setCorrectPicturesLeftTextview();
+    private void showPrintsInCartridgeInput() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View printsInCartridgeDialog = inflater.inflate(R.layout.dialog_prints_in_cartridge,
+                null);
+        alertDialogBuilder.setView(printsInCartridgeDialog)
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO
+                        EditText printsLeftInCartridgeEdittext = printsInCartridgeDialog
+                                .findViewById(R.id.prints_left_in_cartridge_edittext);
+                        int printsLeftNumber = Integer.parseInt(
+                                printsLeftInCartridgeEdittext.getText().toString());
+                        setNumberPrintsLeftInCartridge(printsLeftNumber);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // nothing
+                    }
+                });
+        alertDialogBuilder.setTitle("Set Number of Prints left in Cartridge");
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        alertDialog.show();
+        alertDialog.getWindow().getDecorView().setSystemUiVisibility(
+                getWindow().getDecorView().getSystemUiVisibility());
+        alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
     // endregion Secret Menu -----------------------------------------------------------------------
 

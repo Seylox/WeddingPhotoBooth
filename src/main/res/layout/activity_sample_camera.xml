@@ -208,6 +208,23 @@
             android:layout_marginBottom="8dp"
             android:textColor="@android:color/white"
             />
+
+        <TextView
+            android:id="@+id/xy_prints_left_in_cartridge_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Noch xy Drucke in Cartridge"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/white"
+            />
     </RelativeLayout>
 
 </merge>

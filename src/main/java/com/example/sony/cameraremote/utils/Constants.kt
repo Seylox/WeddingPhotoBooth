@@ -9,4 +9,5 @@ object Constants {
     const val numberPicturesPrintedPrefsString = "NUMBER_PICTURES_PRINTED"
     const val drawHeartInMiddlePrefsString = "DRAW_HEART_IN_MIDDLE"
     const val drawLinesInMiddlePrefsString = "DRAW_LINES_IN_MIDDLE"
+    const val numberPrintsLeftInCartridgePrefsString = "NUMBER_PRINTS_LEFT_IN_CARTRIDGE"
 }

@@ -99,8 +99,14 @@ class PrintActivity : Activity() {
             } else {
                 numberPicturesPrinted = 1
             }
+
+            var numberPrintsLeft = sharedPreferences.getInt(
+                    Constants.numberPrintsLeftInCartridgePrefsString, 0)
+            numberPrintsLeft--
+
             val editor = sharedPreferences.edit()
             editor.putInt(Constants.numberPicturesPrintedPrefsString, numberPicturesPrinted)
+            editor.putInt(Constants.numberPrintsLeftInCartridgePrefsString, numberPrintsLeft)
             editor.apply()
 
             // copying file to /sdcard/Android/data/com.example.sony.cameraremote/files/pictures/print
@@ -146,8 +152,10 @@ class PrintActivity : Activity() {
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE)
-        var numberPicturesPrinted = sharedPreferences.getInt(
+        val numberPicturesPrinted = sharedPreferences.getInt(
                 Constants.numberPicturesPrintedPrefsString, 0)
+        val numberPrintsLeft = sharedPreferences.getInt(
+                Constants.numberPrintsLeftInCartridgePrefsString, 0) // TODO
 
         if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
             // TODO: "foto wird übertragen und dann gedruckt"
