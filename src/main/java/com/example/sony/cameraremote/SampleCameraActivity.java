@@ -144,9 +144,6 @@ public class SampleCameraActivity extends Activity {
 
     private TextView xyPicturesLeftTextview;
     private SharedPreferences sharedPreferences;
-    public static String numberPicturesPrintedPrefsString = "NUMBER_PICTURES_PRINTED";
-    public static String drawHeartInMiddlePrefsString = "DRAW_HEART_IN_MIDDLE";
-    public static String drawLinesInMiddlePrefsString = "DRAW_LINES_IN_MIDDLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -878,7 +875,7 @@ public class SampleCameraActivity extends Activity {
     private void setCorrectPicturesLeftTextview() {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
-        int numberPicturesPrinted = sharedPreferences.getInt(numberPicturesPrintedPrefsString,
+        int numberPicturesPrinted = sharedPreferences.getInt(Constants.numberPicturesPrintedPrefsString,
                 0);
         if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
             xyPicturesLeftTextview.setText("Noch " +
@@ -894,7 +891,7 @@ public class SampleCameraActivity extends Activity {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         int picturesPrinted = Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - pages;
-        editor.putInt(numberPicturesPrintedPrefsString, picturesPrinted);
+        editor.putInt(Constants.numberPicturesPrintedPrefsString, picturesPrinted);
         editor.apply();
         setCorrectPicturesLeftTextview();
     }
@@ -903,7 +900,7 @@ public class SampleCameraActivity extends Activity {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(drawHeartInMiddlePrefsString, draw);
+        editor.putBoolean(Constants.drawHeartInMiddlePrefsString, draw);
         editor.apply();
         String heartStatusToast = draw ? "Drawing heart in the middle" : "Not drawing heart in middle";
         Toast.makeText(this, heartStatusToast, Toast.LENGTH_SHORT)
@@ -913,14 +910,14 @@ public class SampleCameraActivity extends Activity {
     private boolean getDrawHeartInMiddleFromPrefs() {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(drawHeartInMiddlePrefsString, false);
+        return sharedPreferences.getBoolean(Constants.drawHeartInMiddlePrefsString, false);
     }
 
     private void setDrawLinesInMiddlePrefs(boolean draw) {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(drawLinesInMiddlePrefsString, draw);
+        editor.putBoolean(Constants.drawLinesInMiddlePrefsString, draw);
         editor.apply();
         String lineStatusToast = draw ? "Drawing lines in the middle" : "Not drawing lines in middle";
         Toast.makeText(this, lineStatusToast, Toast.LENGTH_SHORT)
@@ -930,7 +927,7 @@ public class SampleCameraActivity extends Activity {
     private boolean getDrawLinesInMiddleFromPrefs() {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(drawLinesInMiddlePrefsString, false);
+        return sharedPreferences.getBoolean(Constants.drawLinesInMiddlePrefsString, false);
     }
     // endregion Set & Get SharedPrefs Strings -----------------------------------------------------
 
@@ -1046,7 +1043,7 @@ public class SampleCameraActivity extends Activity {
 
     private void resetNumberPicturesPrinted() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(numberPicturesPrintedPrefsString, 0);
+        editor.putInt(Constants.numberPicturesPrintedPrefsString, 0);
         editor.apply();
         setCorrectPicturesLeftTextview();
     }
