@@ -485,7 +485,7 @@ public class SampleCameraActivity extends Activity {
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
             Bitmap regineBerndHeart = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.regine_bernd_herz_stronger);
+                    R.drawable.aloha_hawaii_party_3); // for the wedding we used R.drawable.regine_bernd_herz_stronger
             regineBerndHeart = Bitmap.createScaledBitmap(regineBerndHeart,
                     (regineBerndHeart.getWidth()/4),
                     (regineBerndHeart.getHeight()/4),
