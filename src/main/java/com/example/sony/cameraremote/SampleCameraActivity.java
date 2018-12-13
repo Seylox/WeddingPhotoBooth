@@ -886,9 +886,8 @@ public class SampleCameraActivity extends Activity {
         int numberPicturesPrinted = sharedPreferences.getInt(Constants.numberPicturesPrintedPrefsString,
                 0);
         if (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted > 0) {
-            xyPicturesLeftTextview.setText("Noch " +
-                    (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted) +
-                    " Bilder im Drucker");
+            xyPicturesLeftTextview.setText(getString(R.string.noch_xyz_bilder_im_drucker,
+                    (Constants.AMOUNT_MAX_PICTURES_IN_PRINTER - numberPicturesPrinted)));
         } else {
             xyPicturesLeftTextview.setText(R.string.bitte_fotopapier_nachlegen_);
         }
@@ -896,10 +895,10 @@ public class SampleCameraActivity extends Activity {
         int numberPrintsLeftInCartridge = sharedPreferences.getInt(
                 Constants.numberPrintsLeftInCartridgePrefsString, 0);
         if (numberPrintsLeftInCartridge > 0) {
-            xyPrintsLeftInCartridgeTextview.setText("Noch " + numberPrintsLeftInCartridge +
-            " Drucke in Cartridge");
+            xyPrintsLeftInCartridgeTextview.setText(getString(R.string.noch_xyz_drucke_in_cartridge,
+                    numberPrintsLeftInCartridge));
         } else {
-            xyPrintsLeftInCartridgeTextview.setText("BITTE CARTRIDGE WECHSELN");
+            xyPrintsLeftInCartridgeTextview.setText(R.string.bitte_cartridge_wechseln);
         }
     }
 

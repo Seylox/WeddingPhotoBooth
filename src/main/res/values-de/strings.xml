@@ -47,5 +47,8 @@
     <string name="einstellungen">Einstellungen</string>
     <string name="foto_in">. Foto in…</string>
     <string name="einziges_foto_in">Einziges Foto in…</string>
+    <string name="noch_xyz_bilder_im_drucker">Noch %1$d Bilder im Drucker</string>
+    <string name="noch_xyz_drucke_in_cartridge">Noch %1$d Drucke in Cartridge</string>
+    <string name="bitte_cartridge_wechseln">BITTE CARTRIDGE WECHSELN!</string>
 
 </resources>
