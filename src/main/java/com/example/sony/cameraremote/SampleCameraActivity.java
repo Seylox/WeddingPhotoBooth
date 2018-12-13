@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -484,19 +486,30 @@ public class SampleCameraActivity extends Activity {
 
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
-            Bitmap regineBerndHeart = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.aloha_1); // for the wedding we used R.drawable.regine_bernd_herz_stronger
-            regineBerndHeart = Bitmap.createScaledBitmap(regineBerndHeart,
-                    (regineBerndHeart.getWidth()/4),
-                    (regineBerndHeart.getHeight()/4),
-                    true);
+
+            // Getting a random symbol to put in middle
+            int randomNumber = (int)(Math.random() * 45); // random number from 0-44
+            Resources res = getResources();
+            TypedArray icons = res.obtainTypedArray(R.array.emojis_array);
+            Bitmap symbolIcon = BitmapFactory.decodeResource(getResources(), icons.getResourceId(randomNumber, R.drawable.emoji_1));
+            icons.recycle();
+
+//            Bitmap symbolIcon = BitmapFactory.decodeResource(getResources(),
+//                    R.drawable.aloha_1); // for the wedding we used R.drawable.regine_bernd_herz_stronger
+
+            // Uncomment the following to scale down symbol in middle
+//            symbolIcon = Bitmap.createScaledBitmap(symbolIcon,
+//                    (symbolIcon.getWidth()/4),
+//                    (symbolIcon.getHeight()/4),
+//                    true);
+
             // heart in the middle
-            int heartLeft = bitmap1.getWidth() - (regineBerndHeart.getWidth()/2);
-            int heartTop = bitmap1.getHeight() - (regineBerndHeart.getHeight()/2);
+            int heartLeft = bitmap1.getWidth() - (symbolIcon.getWidth()/2);
+            int heartTop = bitmap1.getHeight() - (symbolIcon.getHeight()/2);
             // heart in bottom right corner
-//            int heartLeft = (bitmap1.getWidth()*2) - (regineBerndHeart.getWidth() + (regineBerndHeart.getWidth()/5));
-//            int heartTop = (bitmap1.getHeight()*2) - (regineBerndHeart.getHeight() + (regineBerndHeart.getHeight()/5));
-            canvas.drawBitmap(regineBerndHeart, heartLeft, heartTop, paint);
+//            int heartLeft = (bitmap1.getWidth()*2) - (symbolIcon.getWidth() + (symbolIcon.getWidth()/5));
+//            int heartTop = (bitmap1.getHeight()*2) - (symbolIcon.getHeight() + (symbolIcon.getHeight()/5));
+            canvas.drawBitmap(symbolIcon, heartLeft, heartTop, paint);
         }
 
         // TODO: create filename such as DSC03630-03633.JPG
@@ -918,7 +931,7 @@ public class SampleCameraActivity extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.drawHeartInMiddlePrefsString, draw);
         editor.apply();
-        String heartStatusToast = draw ? "Drawing heart in the middle" : "Not drawing heart in middle";
+        String heartStatusToast = draw ? "Drawing symbol in the middle" : "Not drawing symbol in middle";
         Toast.makeText(this, heartStatusToast, Toast.LENGTH_SHORT)
                 .show();
     }
@@ -987,9 +1000,9 @@ public class SampleCameraActivity extends Activity {
         boolean drawHeartInMiddle = getDrawHeartInMiddleFromPrefs();
         String drawHeartItem;
         if (drawHeartInMiddle) {
-            drawHeartItem = "Drawing heart in middle -> select to not draw";
+            drawHeartItem = "Drawing symbol in middle -> select to not draw";
         } else {
-            drawHeartItem = "Not drawing heart in middle -> select to draw";
+            drawHeartItem = "Not drawing symbol in middle -> select to draw";
         }
 
         boolean drawLinesInMiddle = getDrawLinesInMiddleFromPrefs();
