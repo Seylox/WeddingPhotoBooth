@@ -571,7 +571,7 @@ public class SampleCameraActivity extends Activity {
                     public void onTick(long millisUntilFinished) {
                         if (secondsRemaining > 5) {
                             centerInformationTextview.setVisibility(View.VISIBLE);
-                            centerInformationTextview.setText(currentPicNumBeingTaken + ". Foto in...");
+                            centerInformationTextview.setText(currentPicNumBeingTaken + getString(R.string.foto_in));
                         } else {
                             centerInformationTextview.setText(Integer.toString(secondsRemaining));
                         }
@@ -1141,7 +1141,7 @@ public class SampleCameraActivity extends Activity {
                     public void onTick(long millisUntilFinished) {
                         if (secondsRemaining > 5) {
                             centerInformationTextview.setVisibility(View.VISIBLE);
-                            centerInformationTextview.setText("Einziges Foto in...");
+                            centerInformationTextview.setText(R.string.einziges_foto_in);
                         } else {
                             centerInformationTextview.setText(Integer.toString(secondsRemaining));
                         }

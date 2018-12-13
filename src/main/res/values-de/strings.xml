@@ -30,22 +30,22 @@
 
     <string name="preference_file_key">bernd.photobox.preference_file_key</string>
 
-    <string name="kein_fotopapier_im_drucker">No paper in printer</string>
-    <string name="loeschen_">Delete!</string>
-    <string name="drucken_">Print!</string>
-    <string name="abbrechen">Cancel</string>
-    <string name="foto_druckt___">Printing picture…</string>
-    <string name="foto_wirkilch_loeschen_">Really delete picture?</string>
-    <string name="moechtest_du_das_foto_wirklich_loeschen__es_wird_dann_nicht_gedruckt_">Do you really want to delete the picture? It won\'t be printed then.</string>
-    <string name="loeschen">Delete</string>
+    <string name="kein_fotopapier_im_drucker">Kein Fotopapier im Drucker</string>
+    <string name="loeschen_">Löschen!</string>
+    <string name="drucken_">Drucken!</string>
+    <string name="abbrechen">Abbrechen</string>
+    <string name="foto_druckt___">Foto druckt…</string>
+    <string name="foto_wirkilch_loeschen_">Foto wirklich löschen?</string>
+    <string name="moechtest_du_das_foto_wirklich_loeschen__es_wird_dann_nicht_gedruckt_">Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.</string>
+    <string name="loeschen">Löschen</string>
     <string name="ok">OK</string>
     <string name="touch_me_">Touch\nMe!</string>
-    <string name="wir_machen_jetzt_4_fotos_">We\'re taking 4 pictures now!</string>
-    <string name="bitte_fotopapier_nachlegen_">PLEASE RESTOCK PAPER!</string>
-    <string name="druck_dialog_message">I\'m printing your picture now. Please don\'t pull the picture out before I let it fall down onto the drawer; I have to pull it back in three times before dropping it. Printing will take about one minute. You can continue taking pictures while I\'m printing! :)\n\n(If I haven\'t printed anything after a minute please get Bernd to fix me)</string>
-    <string name="empty_dialog_message">Dang, I don\'t have any paper anymore :( Please get Bernd to restock my paper and we can continue :)</string>
-    <string name="einstellungen">Settings</string>
-    <string name="foto_in">. picture in…</string>
-    <string name="einziges_foto_in">Only picture in…</string>
+    <string name="wir_machen_jetzt_4_fotos_">Wir machen jetzt 4 Fotos!</string>
+    <string name="bitte_fotopapier_nachlegen_">BITTE FOTOPAPIER NACHLEGEN!</string>
+    <string name="druck_dialog_message">Ich drucke dein Foto jetzt. Bitte zieh nicht am Foto, denn bevor ich das Foto am Ende des Druckvorgangs fallen lasse muss ich es drei mal raus- und reinziehen. Der Druck dauert etwa eine Minute. Du kannst aber in der Zwischenzeit schon neue Fotos machen :)\n\n(Falls ich nach einer Minute nichts gedruckt habe bitte Thomas oder Bernd melden)</string>
+    <string name="empty_dialog_message">Oje, ich habe kein Fotopapier mehr :( Bitte bei Thomas oder Bernd melden, damit sie Fotopapier nachlegen, dann können wir weitermachen :)</string>
+    <string name="einstellungen">Einstellungen</string>
+    <string name="foto_in">. Foto in…</string>
+    <string name="einziges_foto_in">Einziges Foto in…</string>
 
 </resources>
