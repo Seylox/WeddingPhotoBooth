@@ -110,17 +110,28 @@ class PrintActivity : Activity() {
             editor.putInt(Constants.numberPrintsLeftInCartridgePrefsString, numberPrintsLeft)
             editor.apply()
 
-            // copying file to /sdcard/Android/data/com.example.sony.cameraremote/files/pictures/print
-            val printPathName = applicationContext
-                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                    .path + "/print/"
-            val printPath = File(printPathName)
+//            // copying file to /sdcard/Android/data/com.example.sony.cameraremote/files/pictures/print
+//            val printPathName = applicationContext
+//                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                    .path + "/print/"
+//            val printPath = File(printPathName)
+//            printPath.mkdirs()
+//
+//            val printFileName = printPathName + simpleFileName
+//
+//            Timber.d("--- copying $completeFileName to $printFileName")
+//            FileUtils.copyFileOrDirectory(completeFileName, printPathName)
+
+            // copying file to /sdcard/Pictures/print
+            val printPathName = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES)
+            val printPath = File(printPathName, "print")
             printPath.mkdirs()
 
-            val printFileName = printPathName + simpleFileName
+            val printFileName = printPath.name + simpleFileName
 
             Timber.d("--- copying $completeFileName to $printFileName")
-            FileUtils.copyFileOrDirectory(completeFileName, printPathName)
+            FileUtils.copyFileOrDirectory(completeFileName, printPath.name)
         }
     }
 
