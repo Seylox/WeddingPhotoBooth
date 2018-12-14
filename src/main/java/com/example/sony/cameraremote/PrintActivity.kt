@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.support.v7.app.AlertDialog
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -51,11 +53,21 @@ class PrintActivity : Activity() {
         findViewById<Button>(R.id.print_pictures_button)
     }
 
+    val emojiImageview by lazy {
+        findViewById<ImageView>(R.id.emoji_imageview)
+    }
+
     lateinit var completeFileName: String
     lateinit var collagesPathName: String
     lateinit var simpleFileName: String
 
     var photoAlreadyMoved = false
+
+    val showSecretIconRunnable = Runnable {
+        emojiImageview.visibility = View.INVISIBLE
+    }
+
+    val mainThreadHandler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,11 +91,24 @@ class PrintActivity : Activity() {
         Picasso.with(this).load(file).into(mImageView)
 
         // Copy file to /sdcard/Pictures/WeddingPhotoBooth/DSC12345-12348.JPG
-        val externalPicturesPath = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES)
-        val externalPicturesPhotoBoothPath = File(externalPicturesPath, "WeddingPhotoBooth")
-        externalPicturesPhotoBoothPath.mkdirs()
-        FileUtils.copyFileOrDirectory(completeFileName, externalPicturesPhotoBoothPath.path)
+//        val externalPicturesPath = Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES)
+//        val externalPicturesPhotoBoothPath = File(externalPicturesPath, "WeddingPhotoBooth")
+//        externalPicturesPhotoBoothPath.mkdirs()
+//        FileUtils.copyFileOrDirectory(completeFileName, externalPicturesPhotoBoothPath.path)
+
+        emojiImageview.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    mainThreadHandler.postDelayed(showSecretIconRunnable, 2000)
+                }
+                MotionEvent.ACTION_UP -> {
+                    view.visibility = View.VISIBLE
+                    mainThreadHandler.removeCallbacks(showSecretIconRunnable)
+                }
+            }
+            return@setOnTouchListener true
+        }
     }
 
     private fun copyPhotoToPrintDirectory() {
