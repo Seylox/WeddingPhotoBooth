@@ -523,13 +523,21 @@ public class SampleCameraActivity extends Activity {
                 lastFilename.length() - 4);
         Timber.d("--- endNumber: " + endNumber);
 
-        final String collagesPathName = getApplicationContext()
-                .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                .getPath() + "/collages/";
-        File collagesPath = new File(collagesPathName);
-        collagesPath.mkdirs();
         final String simpleFileName = "DSC" + startNumber + "-" + endNumber + ".JPG";
-        final File file = new File(collagesPathName + simpleFileName);
+
+        // Saving picture to /sdcard/Android/data/com.example.sony.cameraremote/files/Pictures/collages/DSCwxyz.JPG
+//        final String collagesPathName = getApplicationContext()
+//                .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                .getPath() + "/collages/";
+//        File collagesPath = new File(collagesPathName);
+//        collagesPath.mkdirs();
+
+        File filePath = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        final File collagesFilePath = new File(filePath, "photoboothcollages");
+        collagesFilePath.mkdirs();
+
+        final File file = new File(collagesFilePath + "/" + simpleFileName);
 
         Timber.d("--- combinedPicture file: " + file.getPath());
         try {
@@ -547,7 +555,7 @@ public class SampleCameraActivity extends Activity {
             @Override
             public void run() {
                 Intent intent = PrintActivity.Companion.buildPrintStartActivityIntent(
-                        SampleCameraActivity.this, file.getPath(), collagesPathName, simpleFileName);
+                        SampleCameraActivity.this, file.getPath(), collagesFilePath.getPath(), simpleFileName);
                 startActivityForResult(intent, 12345);
             }
         });
@@ -804,11 +812,20 @@ public class SampleCameraActivity extends Activity {
     private Target targetWithNextThread = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            final File file = new File(
-                    getApplicationContext()
-                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                            .getPath()
-                            + "/" + mLastTakenPhotoName);
+            // Saving picture to /sdcard/Android/data/com.example.sony.cameraremote/files/Pictures/DSCwxyz.JPG
+//            final File file = new File(
+//                    getApplicationContext()
+//                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                            .getPath()
+//                            + "/" + mLastTakenPhotoName);
+
+            // Saving picture to /sdcard/Pictures/photoboothsinglepictures
+            File filePath = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            File singlesFilePath = new File(filePath, "photoboothsinglepictures");
+            singlesFilePath.mkdirs();
+            final File file = new File(singlesFilePath.getPath() + "/" + mLastTakenPhotoName);
+
             Timber.d("--- targetWithNextThread file: " + file.getPath());
             try {
                 file.createNewFile();
@@ -856,11 +873,20 @@ public class SampleCameraActivity extends Activity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final File file = new File(
-                            getApplicationContext()
-                                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                    .getPath()
-                                    + "/" + mLastTakenPhotoName);
+                    // Saving picture to /sdcard/Android/data/com.example.sony.cameraremote/files/Pictures/DSCwxyz.JPG
+//                    final File file = new File(
+//                            getApplicationContext()
+//                                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                                    .getPath()
+//                                    + "/" + mLastTakenPhotoName);
+
+                    // Saving picture to /sdcard/Pictures/photoboothsinglepictures
+                    File filePath = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES);
+                    File singlesFilePath = new File(filePath, "photoboothsinglepictures");
+                    singlesFilePath.mkdirs();
+                    final File file = new File(singlesFilePath.getPath() + "/" + mLastTakenPhotoName);
+
                     Timber.d("--- targetWithOpenPrintActivity file: " + file.getPath());
                     try {
                         file.createNewFile();
@@ -1221,14 +1247,22 @@ public class SampleCameraActivity extends Activity {
     private Target targetWithOnlyOnePicture = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            final String residingFolder = getApplicationContext()
-                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                    .getPath();
-            final File file = new File(
-                    getApplicationContext()
-                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                            .getPath()
-                            + "/" + mLastTakenPhotoName);
+//            final String residingFolder = getApplicationContext()
+//                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                    .getPath();
+//            final File file = new File(
+//                    getApplicationContext()
+//                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                            .getPath()
+//                            + "/" + mLastTakenPhotoName);
+
+            // Saving picture to /sdcard/Pictures/photoboothsinglepictures
+            final File filePath = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            File singlesFilePath = new File(filePath, "photoboothsinglepictures");
+            singlesFilePath.mkdirs();
+            final File file = new File(singlesFilePath.getPath() + "/" + mLastTakenPhotoName);
+
             try {
                 file.createNewFile();
                 FileOutputStream ostream = new FileOutputStream(file);
@@ -1245,7 +1279,7 @@ public class SampleCameraActivity extends Activity {
                     Intent intent = PrintActivity.Companion.buildPrintStartActivityIntent(
                             SampleCameraActivity.this,
                             file.getPath(),
-                            residingFolder,
+                            filePath.getPath(),
                             mLastTakenPhotoName);
                     startActivityForResult(intent, 12345);
                 }

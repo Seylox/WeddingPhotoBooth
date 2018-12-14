@@ -123,15 +123,13 @@ class PrintActivity : Activity() {
 //            FileUtils.copyFileOrDirectory(completeFileName, printPathName)
 
             // copying file to /sdcard/Pictures/print
-            val printPathName = Environment.getExternalStoragePublicDirectory(
+            val externalPicturesPath = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES)
-            val printPath = File(printPathName, "print")
+            val printPath = File(externalPicturesPath, "print")
             printPath.mkdirs()
 
-            val printFileName = printPath.name + simpleFileName
-
-            Timber.d("--- copying $completeFileName to $printFileName")
-            FileUtils.copyFileOrDirectory(completeFileName, printPath.name)
+            Timber.d("--- copying $completeFileName to $printPath")
+            FileUtils.copyFileOrDirectory(completeFileName, printPath.path)
         }
     }
 
