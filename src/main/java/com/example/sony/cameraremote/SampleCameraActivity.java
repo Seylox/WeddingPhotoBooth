@@ -1129,7 +1129,7 @@ public class SampleCameraActivity extends Activity {
             public void onTick(long millisUntilFinished) {
                 if (secondsRemaining > 0) {
                     centerInformationTextview.setVisibility(View.VISIBLE);
-                    centerInformationTextview.setText("Wir machen jetzt 1 Foto!");
+                    centerInformationTextview.setText(R.string.wir_machen_jetzt_1_foto);
                 }
                 secondsRemaining--;
             }

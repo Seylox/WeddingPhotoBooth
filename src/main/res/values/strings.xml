@@ -50,5 +50,6 @@
     <string name="noch_xyz_bilder_im_drucker">%1$d prints left in printer (paper)</string>
     <string name="noch_xyz_drucke_in_cartridge">%1$d prints left in printer (cartridge)</string>
     <string name="bitte_cartridge_wechseln">PLEASE CHANGE CARTRIDGE!</string>
+    <string name="wir_machen_jetzt_1_foto">We\'re taking 1 picture now!</string>
 
 </resources>

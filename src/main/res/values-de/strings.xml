@@ -50,5 +50,6 @@
     <string name="noch_xyz_bilder_im_drucker">Noch %1$d Bilder im Drucker</string>
     <string name="noch_xyz_drucke_in_cartridge">Noch %1$d Drucke in Cartridge</string>
     <string name="bitte_cartridge_wechseln">BITTE CARTRIDGE WECHSELN!</string>
+    <string name="wir_machen_jetzt_1_foto">Wir machen jetzt 1 Foto!</string>
 
 </resources>
