@@ -168,12 +168,27 @@
         android:layout_height="match_parent"
         >
         <Button
+            android:id="@+id/take_one_picture_button"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_above="@+id/take_four_pictures_button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="50dp"
+            android:text="@string/touch_me_one_photo"
+            android:textSize="20sp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@drawable/circular_button_blue"
+            android:onClick="onClickTakeOnePictureButton"
+            />
+
+        <Button
             android:id="@+id/take_four_pictures_button"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_centerInParent="true"
-            android:text="@string/touch_me_"
-            android:textSize="40sp"
+            android:text="@string/touch_me_four_photos"
+            android:textSize="50sp"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:background="@drawable/circular_button_blue"

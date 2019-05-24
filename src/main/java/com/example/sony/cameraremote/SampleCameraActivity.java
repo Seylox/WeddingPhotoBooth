@@ -139,7 +139,9 @@ public class SampleCameraActivity extends Activity {
     private int secondsRemaining;
     // Counter which picture is being taken right now
     private int currentPicNumBeingTaken;
-    // Round Button "Take four pictures!"
+    // Round Button "Touch Me! (1 photo)"
+    private Button takeOnePictureButton;
+    // Round Button "Touch Me! (4 photos)"
     private Button takeFourPicturesButton;
     // boolean that decides if zoom buttons are allowed to be shown or not
     private boolean zoomButtonsAllowedToBeShown = true;
@@ -175,6 +177,8 @@ public class SampleCameraActivity extends Activity {
         mOpenLastButton = findViewById(R.id.open_last_button);
         centerInformationTextview = findViewById(R.id.center_information_textview);
         centerInformationTextview.setVisibility(View.GONE);
+        takeOnePictureButton = findViewById(R.id.take_one_picture_button);
+        updateSinglePhotosButtonVisibility();
         takeFourPicturesButton = findViewById(R.id.take_four_pictures_button);
         xyPicturesLeftTextview = findViewById(R.id.xy_pictures_left_textview);
         xyPrintsLeftInCartridgeTextview = findViewById(R.id.xy_prints_left_in_cartridge_textview);
@@ -518,8 +522,7 @@ public class SampleCameraActivity extends Activity {
             canvas.drawBitmap(symbolIcon, symbolLeft, symbolTop, paint);
         }
 
-        // TODO: create filename such as DSC03630-03633.JPG
-        // DSC03630.JPG
+        // Combine the taken pictures into a collage
         String firstFilename = takenPictureFilePathArrayList.get(0);
         String startNumber = firstFilename.substring(firstFilename.length() - 9,
                 firstFilename.length() - 4);
@@ -529,6 +532,7 @@ public class SampleCameraActivity extends Activity {
                 lastFilename.length() - 4);
         Timber.d("--- endNumber: " + endNumber);
 
+        // Create filename such as DSC03630-03633.JPG
         final String simpleFileName = "DSC" + startNumber + "-" + endNumber + ".JPG";
 
         // Saving picture to /sdcard/Pictures/photoboothcollages/DSCvwxyz-vwxyz.JPG (e.g. DSC04521-04524.JPG)
@@ -561,10 +565,19 @@ public class SampleCameraActivity extends Activity {
         });
     }
 
+    private void updateSinglePhotosButtonVisibility() {
+        if (getShowSinglePhotosButtonFromPrefs()) {
+            takeOnePictureButton.setVisibility(View.VISIBLE);
+        } else {
+            takeOnePictureButton.setVisibility(View.GONE);
+        }
+    }
+
     private void showButtons() {
         zoomButtonsAllowedToBeShown = true;
         mButtonZoomIn.setVisibility(View.VISIBLE);
         mButtonZoomOut.setVisibility(View.VISIBLE);
+        updateSinglePhotosButtonVisibility();
         takeFourPicturesButton.setVisibility(View.VISIBLE);
         xyPicturesLeftTextview.setVisibility(View.VISIBLE);
         xyPrintsLeftInCartridgeTextview.setVisibility(View.VISIBLE);
@@ -574,6 +587,7 @@ public class SampleCameraActivity extends Activity {
         zoomButtonsAllowedToBeShown = false;
         mButtonZoomIn.setVisibility(View.GONE);
         mButtonZoomOut.setVisibility(View.GONE);
+        takeOnePictureButton.setVisibility(View.GONE);
         takeFourPicturesButton.setVisibility(View.GONE);
         xyPicturesLeftTextview.setVisibility(View.GONE);
         xyPrintsLeftInCartridgeTextview.setVisibility(View.GONE);
@@ -608,6 +622,15 @@ public class SampleCameraActivity extends Activity {
                 }.start();
             }
         });
+    }
+
+    /**
+     * Click Handler for the "Take one picture" Button
+     * @param view
+     */
+    public void onClickTakeOnePictureButton(View view) {
+        hideButtons();
+        takeOnePictureOnly();
     }
 
     /**
@@ -961,7 +984,7 @@ public class SampleCameraActivity extends Activity {
         editor.putBoolean(Constants.useRandomSymbolPrefsString, useRandomSymbols);
         editor.apply();
         String useRandomSymbolsToast = useRandomSymbols ?
-                "Using random Symbols" : "Not using random Symbols";
+                "Using random Symbols" : "Using static Symbol";
         Toast.makeText(this, useRandomSymbolsToast, Toast.LENGTH_SHORT)
                 .show();
     }
@@ -1046,8 +1069,7 @@ public class SampleCameraActivity extends Activity {
 
     private void showSecretMenu() {
         // TODO:
-        // 1) Show Single Photo Option
-        // 2) Secret option: configure symbol path
+        // Secret option: configure symbol path
 
         boolean drawHeartInMiddle = getDrawHeartInMiddleFromPrefs();
         String drawHeartItem;
@@ -1073,6 +1095,14 @@ public class SampleCameraActivity extends Activity {
             useRandomSymbolItem = "Using static Symbol in middle -> select to use random";
         }
 
+        boolean showSinglePhotosButton = getShowSinglePhotosButtonFromPrefs();
+        String showSinglePhotosButtonItem;
+        if (showSinglePhotosButton) {
+            showSinglePhotosButtonItem = "Showing single photos button item -> select to not show";
+        } else {
+            showSinglePhotosButtonItem = "Not showing single photos button item -> select to show";
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // TODO: set symbol path
@@ -1084,6 +1114,7 @@ public class SampleCameraActivity extends Activity {
                 drawLinesItem,                          // 3
                 "Take only one picture next time",      // 4
                 useRandomSymbolItem,                    // 5
+                showSinglePhotosButtonItem,             // 6
                 "Finish SampleCameraActivity"}; // else; better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
@@ -1103,6 +1134,9 @@ public class SampleCameraActivity extends Activity {
                             nextShootIsOnlyOnePicture = true;
                         } else if (which == 5) {
                             setUseRandomSymbolPrefs(!getUseRandomSymbolFromPrefs());
+                        } else if (which == 6) {
+                            setShowSinglePhotosButtonPrefs(!getShowSinglePhotosButtonFromPrefs());
+                            updateSinglePhotosButtonVisibility();
                         } else {
                             finish();
                         }
