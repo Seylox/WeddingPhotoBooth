@@ -487,15 +487,20 @@ public class SampleCameraActivity extends Activity {
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
 
-            // Getting a random symbol to put in middle
-            int randomNumber = (int)(Math.random() * 45); // random number from 0-44
-            Resources res = getResources();
-            TypedArray icons = res.obtainTypedArray(R.array.emojis_array);
-            Bitmap symbolIcon = BitmapFactory.decodeResource(getResources(), icons.getResourceId(randomNumber, R.drawable.emoji_1));
-            icons.recycle();
-
-//            Bitmap symbolIcon = BitmapFactory.decodeResource(getResources(),
-//                    R.drawable.aloha_1); // for the wedding we used R.drawable.regine_bernd_herz_stronger
+            Bitmap symbolIcon;
+            // Check if we should use a random symbol or a static one
+            if (getUseRandomSymbolFromPrefs()) {
+                // Getting a random symbol to put in middle
+                int randomNumber = (int)(Math.random() * 45); // random number from 0-44
+                Resources res = getResources();
+                TypedArray icons = res.obtainTypedArray(R.array.emojis_array);
+                symbolIcon = BitmapFactory.decodeResource(getResources(), icons.getResourceId(randomNumber, R.drawable.emoji_1));
+                icons.recycle();
+            } else {
+                // Don't use a random symbol but the one specified here
+                symbolIcon = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.lisa_markus_hochzeit_300); // for the wedding we used R.drawable.regine_bernd_herz_stronger
+            }
 
             // Uncomment the following to scale down symbol in middle
 //            symbolIcon = Bitmap.createScaledBitmap(symbolIcon,
@@ -503,13 +508,14 @@ public class SampleCameraActivity extends Activity {
 //                    (symbolIcon.getHeight()/4),
 //                    true);
 
-            // heart in the middle
-            int heartLeft = bitmap1.getWidth() - (symbolIcon.getWidth()/2);
-            int heartTop = bitmap1.getHeight() - (symbolIcon.getHeight()/2);
-            // heart in bottom right corner
-//            int heartLeft = (bitmap1.getWidth()*2) - (symbolIcon.getWidth() + (symbolIcon.getWidth()/5));
-//            int heartTop = (bitmap1.getHeight()*2) - (symbolIcon.getHeight() + (symbolIcon.getHeight()/5));
-            canvas.drawBitmap(symbolIcon, heartLeft, heartTop, paint);
+            // TODO: option to configure it from secret menu where to set it
+            // symbol in the middle
+            int symbolLeft = bitmap1.getWidth() - (symbolIcon.getWidth()/2);
+            int symbolTop = bitmap1.getHeight() - (symbolIcon.getHeight()/2);
+            // symbol in bottom right corner
+//            int symbolLeft = (bitmap1.getWidth()*2) - (symbolIcon.getWidth() + (symbolIcon.getWidth()/5));
+//            int symbolTop = (bitmap1.getHeight()*2) - (symbolIcon.getHeight() + (symbolIcon.getHeight()/5));
+            canvas.drawBitmap(symbolIcon, symbolLeft, symbolTop, paint);
         }
 
         // TODO: create filename such as DSC03630-03633.JPG
@@ -525,13 +531,7 @@ public class SampleCameraActivity extends Activity {
 
         final String simpleFileName = "DSC" + startNumber + "-" + endNumber + ".JPG";
 
-        // Saving picture to /sdcard/Android/data/com.example.sony.cameraremote/files/Pictures/collages/DSCwxyz.JPG
-//        final String collagesPathName = getApplicationContext()
-//                .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                .getPath() + "/collages/";
-//        File collagesPath = new File(collagesPathName);
-//        collagesPath.mkdirs();
-
+        // Saving picture to /sdcard/Pictures/photoboothcollages/DSCvwxyz-vwxyz.JPG (e.g. DSC04521-04524.JPG)
         File filePath = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         final File collagesFilePath = new File(filePath, "photoboothcollages");
@@ -812,14 +812,7 @@ public class SampleCameraActivity extends Activity {
     private Target targetWithNextThread = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            // Saving picture to /sdcard/Android/data/com.example.sony.cameraremote/files/Pictures/DSCwxyz.JPG
-//            final File file = new File(
-//                    getApplicationContext()
-//                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                            .getPath()
-//                            + "/" + mLastTakenPhotoName);
-
-            // Saving picture to /sdcard/Pictures/photoboothsinglepictures
+            // Saving picture to /sdcard/Pictures/photoboothsinglepictures/DSCvwxyz.JPG (e.g. DSC04521.JPG)
             File filePath = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES);
             File singlesFilePath = new File(filePath, "photoboothsinglepictures");
@@ -873,14 +866,7 @@ public class SampleCameraActivity extends Activity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    // Saving picture to /sdcard/Android/data/com.example.sony.cameraremote/files/Pictures/DSCwxyz.JPG
-//                    final File file = new File(
-//                            getApplicationContext()
-//                                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                                    .getPath()
-//                                    + "/" + mLastTakenPhotoName);
-
-                    // Saving picture to /sdcard/Pictures/photoboothsinglepictures
+                    // Saving picture to /sdcard/Pictures/photoboothsinglepictures/DSCvwxyz.JPG (e.g. DSC04521.JPG)
                     File filePath = Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_PICTURES);
                     File singlesFilePath = new File(filePath, "photoboothsinglepictures");
@@ -968,6 +954,42 @@ public class SampleCameraActivity extends Activity {
         return sharedPreferences.getBoolean(Constants.drawHeartInMiddlePrefsString, false);
     }
 
+    private void setUseRandomSymbolPrefs(boolean useRandomSymbols) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.useRandomSymbolPrefsString, useRandomSymbols);
+        editor.apply();
+        String useRandomSymbolsToast = useRandomSymbols ?
+                "Using random Symbols" : "Not using random Symbols";
+        Toast.makeText(this, useRandomSymbolsToast, Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private boolean getUseRandomSymbolFromPrefs() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(Constants.useRandomSymbolPrefsString, false);
+    }
+
+    private void setShowSinglePhotosButtonPrefs(boolean showSinglePhotosButton) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.showSinglePhotoButtonPrefsString, showSinglePhotosButton);
+        editor.apply();
+        String showSinglePhotosButtonToast = showSinglePhotosButton ?
+                "Showing Single Photos Button" : "Not showing Single Photos Button";
+        Toast.makeText(this, showSinglePhotosButtonToast, Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private boolean getShowSinglePhotosButtonFromPrefs() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(Constants.showSinglePhotoButtonPrefsString, false);
+    }
+
     private void setDrawLinesInMiddlePrefs(boolean draw) {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
@@ -1023,6 +1045,10 @@ public class SampleCameraActivity extends Activity {
     }
 
     private void showSecretMenu() {
+        // TODO:
+        // 1) Show Single Photo Option
+        // 2) Secret option: configure symbol path
+
         boolean drawHeartInMiddle = getDrawHeartInMiddleFromPrefs();
         String drawHeartItem;
         if (drawHeartInMiddle) {
@@ -1039,7 +1065,17 @@ public class SampleCameraActivity extends Activity {
             drawLinesItem = "Not drawing lines in middle -> select to draw";
         }
 
+        boolean useRandomSymbol = getUseRandomSymbolFromPrefs();
+        String useRandomSymbolItem;
+        if (useRandomSymbol) {
+            useRandomSymbolItem = "Using random Symbol in middle -> select to use static";
+        } else {
+            useRandomSymbolItem = "Using static Symbol in middle -> select to use random";
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // TODO: set symbol path
 
         CharSequence[] secretMenuItems = {
                 "Set number of prints left in cartridge",        // 0
@@ -1047,6 +1083,7 @@ public class SampleCameraActivity extends Activity {
                 drawHeartItem,                          // 2
                 drawLinesItem,                          // 3
                 "Take only one picture next time",      // 4
+                useRandomSymbolItem,                    // 5
                 "Finish SampleCameraActivity"}; // else; better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
@@ -1064,6 +1101,8 @@ public class SampleCameraActivity extends Activity {
                             setDrawLinesInMiddlePrefs(!getDrawLinesInMiddleFromPrefs());
                         } else if (which == 4) {
                             nextShootIsOnlyOnePicture = true;
+                        } else if (which == 5) {
+                            setUseRandomSymbolPrefs(!getUseRandomSymbolFromPrefs());
                         } else {
                             finish();
                         }
@@ -1247,16 +1286,7 @@ public class SampleCameraActivity extends Activity {
     private Target targetWithOnlyOnePicture = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-//            final String residingFolder = getApplicationContext()
-//                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                    .getPath();
-//            final File file = new File(
-//                    getApplicationContext()
-//                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                            .getPath()
-//                            + "/" + mLastTakenPhotoName);
-
-            // Saving picture to /sdcard/Pictures/photoboothsinglepictures
+            // Saving picture to /sdcard/Pictures/photoboothsinglepictures/DSCvwxyz.JPG (e.g. DSC04521.JPG)
             final File filePath = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES);
             File singlesFilePath = new File(filePath, "photoboothsinglepictures");

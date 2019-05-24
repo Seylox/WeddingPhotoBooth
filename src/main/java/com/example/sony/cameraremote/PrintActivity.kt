@@ -54,7 +54,9 @@ class PrintActivity : Activity() {
     }
 
     val emojiImageview by lazy {
-        findViewById<ImageView>(R.id.emoji_imageview)
+        val view = findViewById<ImageView>(R.id.emoji_imageview)
+        view.visibility = if (getUseRandomSymbolFromPrefs()) View.VISIBLE else View.GONE
+        view
     }
 
     lateinit var completeFileName: String
@@ -135,19 +137,7 @@ class PrintActivity : Activity() {
             editor.putInt(Constants.numberPrintsLeftInCartridgePrefsString, numberPrintsLeft)
             editor.apply()
 
-//            // copying file to /sdcard/Android/data/com.example.sony.cameraremote/files/pictures/print
-//            val printPathName = applicationContext
-//                    .getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                    .path + "/print/"
-//            val printPath = File(printPathName)
-//            printPath.mkdirs()
-//
-//            val printFileName = printPathName + simpleFileName
-//
-//            Timber.d("--- copying $completeFileName to $printFileName")
-//            FileUtils.copyFileOrDirectory(completeFileName, printPathName)
-
-            // copying file to /sdcard/Pictures/print
+            // copying file to /sdcard/Pictures/print/DSCvwxyz.JPG (e.g. DSC04521.JPG)
             val externalPicturesPath = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES)
             val printPath = File(externalPicturesPath, "print")
@@ -305,6 +295,12 @@ class PrintActivity : Activity() {
         alertDialog.show()
         alertDialog.window!!.decorView.systemUiVisibility = window.decorView.systemUiVisibility
         alertDialog.window!!.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+    }
+
+    private fun getUseRandomSymbolFromPrefs(): Boolean {
+        val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(Constants.useRandomSymbolPrefsString, false)
     }
 
     /**
