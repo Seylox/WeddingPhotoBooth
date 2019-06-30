@@ -46,8 +46,8 @@
     <string name="one_photo">1\nFoto!</string>
     <string name="wir_machen_jetzt_4_fotos_">Wir machen jetzt 4 Fotos!</string>
     <string name="bitte_fotopapier_nachlegen_">BITTE FOTOPAPIER NACHLEGEN!</string>
-    <string name="druck_dialog_message">Ich drucke dein Foto jetzt. Bitte zieh nicht am Foto, denn bevor ich das Foto am Ende des Druckvorgangs fallen lasse muss ich es drei mal raus- und reinziehen. Der Druck dauert etwa eine Minute. Du kannst aber in der Zwischenzeit schon neue Fotos machen :)\n\n(Falls ich nach einer Minute nichts gedruckt habe bitte Thomas oder Bernd melden)</string>
-    <string name="empty_dialog_message">Oje, ich habe kein Fotopapier mehr :( Bitte bei Thomas oder Bernd melden, damit sie Fotopapier nachlegen, dann können wir weitermachen :)</string>
+    <string name="druck_dialog_message">Ich drucke dein Foto jetzt. Bitte zieh nicht am Foto, denn bevor ich das Foto am Ende des Druckvorgangs fallen lasse muss ich es drei mal raus- und reinziehen. Der Druck dauert etwa eine Minute. Du kannst aber in der Zwischenzeit schon neue Fotos machen :)\n\n(Falls ich nach einer Minute nichts gedruckt habe bitte Bernd oder Regine melden)</string>
+    <string name="empty_dialog_message">Oje, ich habe kein Fotopapier mehr :( Bitte bei Bernd oder Regine melden, damit sie Fotopapier nachlegen, dann können wir weitermachen :)</string>
     <string name="einstellungen">Einstellungen</string>
     <string name="foto_in">. Foto in…</string>
     <string name="einziges_foto_in">Einziges Foto in…</string>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2014 Sony Corporation -->
+<resources>
+
+    <string name="app_name">Camera Remote API Sample</string>
+    <string name="sample_camera">Camera Remote API Sample</string>
+    <string name="msg_wifi_disconnect">(Wi-Fi disconnected)</string>
+    <string name="button_take_picture">Take Picture</string>
+    <string name="button_rec_start">Start movie\nrecording</string>
+    <string name="button_rec_stop">Stop movie\nrecording</string>
+    <string name="button_start_search">Start device discovery</string>
+    <string name="button_contents_list">Contents List</string>
+    <string name="msg_search_devices">Connect to compatible camera via Wi-Fi settings before device discovery.</string>
+    <string name="msg_device_search_finish">Device discovery successfully completed.</string>
+    <string name="msg_error_device_searching">Failed to search.\nStopped.</string>
+    <string name="msg_error_api_calling">Cannot control the device by API.</string>
+    <string name="msg_rec_start">Recording started.</string>
+    <string name="msg_rec_stop">Recording stopped.</string>
+    <string name="msg_error_take_picture">Failed to take a picture.</string>
+    <string name="msg_error_connection">Failed to connect to the device.</string>
+    <string name="msg_error_non_supported_device">Unsupported device in this sample app.</string>
+    <string name="msg_error_content">Contents not available.</string>
+    <string name="msg_error_streaming_playback">Movie playback is not supported.</string>
+    <string name="no_image">No image</string>
+    <string name="prompt_shoot_mode">Select shoot mode</string>
+    <string name="msg_error_no_supported_shootmode">Unsupported shoot mode in this sample app.</string>
+    <string name="title_activity_date_list">Date List</string>
+    <string name="title_activity_contents_grid">Contents</string>
+    <string name="title_activity_still_content">Still</string>
+    <string name="title_activity_movie_content">Movie</string>
+
+    <string name="preference_file_key">bernd.photobox.preference_file_key</string>
+
+    <string name="kein_fotopapier_im_drucker">Brak papieru w drukarce - Kein Fotopapier im Drucker</string>
+    <string name="loeschen_">Usuń! - Löschen!</string>
+    <string name="drucken_">Drukuj! - Drucken!</string>
+    <string name="abbrechen">Zatrzymaj - Abbrechen</string>
+    <string name="foto_druckt___">Drukowanie zdjęcia… - Foto druckt…</string>
+    <string name="foto_wirkilch_loeschen_">Na pewno chcesz usunąć zdjęcie? - Foto wirklich löschen?</string>
+    <string name="moechtest_du_das_foto_wirklich_loeschen__es_wird_dann_nicht_gedruckt_">Czy chcesz usunąć to zdjęcie? Nie będzie można go juz wydrukować. - Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.</string>
+    <string name="loeschen">Usuń - Löschen</string>
+    <string name="ok">OK</string>
+    <string name="touch_me_">Naciśnij\nmnie! - Drück\nmich!</string>
+    <string name="touch_me_one_photo">Naciśnij mnie!\n(1 zdjęcie) - Drück mich!\n(1 Foto)</string>
+    <string name="touch_me_four_photos">Naciśnij mnie!\n(4 zdjęcia) - Drück mich!\n(4 Fotos)</string>
+    <string name="four_photos">4\nzdjęcia! - 4\nFotos!</string>
+    <string name="one_photo">1\nzdjęcie! - 1\nFoto!</string>
+    <string name="wir_machen_jetzt_4_fotos_">Teraz zrobimy 4 zdjęcia! - Wir machen jetzt 4 Fotos!</string>
+    <string name="bitte_fotopapier_nachlegen_">Proszę włóż więcej papieru! - BITTE FOTOPAPIER NACHLEGEN!</string>
+    <string name="druck_dialog_message">Teraz drukuję Twoje zdjęcia :) Nie ciągnij za zdjęcie póki całkowicie nie wypadnie. Zanim zdjęcie będzie gotowe aparat musi je 3 razy wciągnąć i wypuścić. Poczekaj cierpliwie :) W międzyczasie możesz robić nowe zdjęcia.\n\nJeżeli po minucie zdjęcie nie jest gotowe, powiedz Marcie albo Kubie (przystojny chłopak świadkowej ;P )  - Ich drucke dein Foto jetzt. Bitte zieh nicht am Foto, denn bevor ich das Foto am Ende des Druckvorgangs fallen lasse muss ich es drei mal raus- und reinziehen. Der Druck dauert etwa eine Minute. Du kannst aber in der Zwischenzeit schon neue Fotos machen :)\n\n(Falls ich nach einer Minute nichts gedruckt habe bitte Bernd oder Regine melden)</string>
+    <string name="empty_dialog_message">O nie, papier się skończył! Powiedz o tym Marcie albo Kubie (przystojny chłopak świadkowej ;) ) - Oje, ich habe kein Fotopapier mehr :( Bitte bei Bernd oder Regine melden, damit sie Fotopapier nachlegen, dann können wir weitermachen :)</string>
+    <string name="einstellungen">Ustawienia - Einstellungen</string>
+    <string name="foto_in">. zdjęcie za… - . Foto in…</string>
+    <string name="einziges_foto_in">Pojedyncze zdjęcie za… - Einziges Foto in…</string>
+    <string name="noch_xyz_bilder_im_drucker">Jeszcze %1$d blankietów dostępnych w drukarce - Noch %1$d Bilder im Drucker</string>
+    <string name="noch_xyz_drucke_in_cartridge">Pozostało tuszu na %1$d drukowań - Noch %1$d Drucke in Cartridge</string>
+    <string name="bitte_cartridge_wechseln">Tusz się skończył! - BITTE CARTRIDGE WECHSELN!</string>
+    <string name="wir_machen_jetzt_1_foto">Teraz zrobimy jedno zdjęcie! - Wir machen jetzt 1 Foto!</string>
+
+</resources>
