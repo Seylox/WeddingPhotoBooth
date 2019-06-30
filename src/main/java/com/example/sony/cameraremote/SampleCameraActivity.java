@@ -491,6 +491,7 @@ public class SampleCameraActivity extends Activity {
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
 
+            float scalingFactor = getSymbolIconScalingPrefs();
             Bitmap symbolIcon;
             // Check if we should use a random symbol or a static one
             if (getUseRandomSymbolFromPrefs()) {
@@ -501,16 +502,24 @@ public class SampleCameraActivity extends Activity {
                 symbolIcon = BitmapFactory.decodeResource(getResources(), icons.getResourceId(randomNumber, R.drawable.emoji_1));
                 icons.recycle();
             } else {
-                // Don't use a random symbol but the one specified here
-                symbolIcon = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.lisa_markus_hochzeit_300); // for the wedding we used R.drawable.regine_bernd_herz_stronger
-            }
+                // Don't use a random logo, but load one from disk
+                // Loads the Logo (Symbol Icon) from disk, from path /sdcard/Pictures/photoboothicon/logo.png
+                // Best Logo size around 600x600 pixels
+                File picturesDirectory = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES);
+                File iconPath = new File(picturesDirectory, "photoboothicon/logo.png");
+                symbolIcon = BitmapFactory.decodeFile(iconPath.getPath());
 
-            // Uncomment the following to scale down symbol in middle
-//            symbolIcon = Bitmap.createScaledBitmap(symbolIcon,
-//                    (symbolIcon.getWidth()/4),
-//                    (symbolIcon.getHeight()/4),
-//                    true);
+                // Uncomment the following to scale down symbol in middle
+                symbolIcon = Bitmap.createScaledBitmap(symbolIcon,
+                        ((int)(symbolIcon.getWidth()*scalingFactor)),
+                        ((int)(symbolIcon.getHeight()*scalingFactor)),
+                        true);
+
+                // Don't use a random symbol but the one specified here
+//                symbolIcon = BitmapFactory.decodeResource(getResources(),
+//                        R.drawable.lisa_markus_hochzeit_300); // for the wedding we used R.drawable.regine_bernd_herz_stronger
+            }
 
             // TODO: option to configure it from secret menu where to set it
             // symbol in the middle
@@ -995,6 +1004,20 @@ public class SampleCameraActivity extends Activity {
         return sharedPreferences.getBoolean(Constants.useRandomSymbolPrefsString, false);
     }
 
+    private void setSymbolIconScalingPrefs(float scaling) {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat(Constants.symbolIconScalingPrefsString, scaling);
+        editor.apply();
+    }
+
+    private float getSymbolIconScalingPrefs() {
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getFloat(Constants.symbolIconScalingPrefsString, 1.0f);
+    }
+
     private void setShowSinglePhotosButtonPrefs(boolean showSinglePhotosButton) {
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
@@ -1115,6 +1138,7 @@ public class SampleCameraActivity extends Activity {
                 "Take only one picture next time",      // 4
                 useRandomSymbolItem,                    // 5
                 showSinglePhotosButtonItem,             // 6
+                "Set Logo Scaling Factor",              // 7
                 "Finish SampleCameraActivity"}; // else; better would be "switch WiFi"
 
         alertDialogBuilder.setTitle("Secret Menu")
@@ -1137,12 +1161,48 @@ public class SampleCameraActivity extends Activity {
                         } else if (which == 6) {
                             setShowSinglePhotosButtonPrefs(!getShowSinglePhotosButtonFromPrefs());
                             updateSinglePhotosButtonVisibility();
+                        } else if (which == 7) {
+                            showSetScalingFactorInput();
                         } else {
                             finish();
                         }
                     }
                 });
 
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        alertDialog.show();
+        alertDialog.getWindow().getDecorView().setSystemUiVisibility(
+                getWindow().getDecorView().getSystemUiVisibility());
+        alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
+
+    private void showSetScalingFactorInput() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View scalingFactorDialog = inflater.inflate(R.layout.dialog_scaling_factor,
+                null);
+        EditText editText = scalingFactorDialog.findViewById(R.id.scaling_factor_edittext);
+        float currentScalingFactor = getSymbolIconScalingPrefs();
+        editText.setText(Float.toString(currentScalingFactor));
+        alertDialogBuilder.setView(scalingFactorDialog)
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText scalingFactorEditText = scalingFactorDialog
+                                .findViewById(R.id.scaling_factor_edittext);
+                        float scalingFactor = Float.parseFloat(scalingFactorEditText.getText().toString());
+                        setSymbolIconScalingPrefs(scalingFactor);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // nothing
+                    }
+                });
+        alertDialogBuilder.setTitle("Set Logo Scaling Factor");
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);

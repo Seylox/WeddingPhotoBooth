@@ -12,4 +12,5 @@ object Constants {
     const val numberPrintsLeftInCartridgePrefsString = "NUMBER_PRINTS_LEFT_IN_CARTRIDGE"
     const val showSinglePhotoButtonPrefsString = "SHOW_SINGLE_PHOTO_BUTTON"
     const val useRandomSymbolPrefsString = "USE_RANDOM_SYMBOL"
+    const val symbolIconScalingPrefsString = "SYMBOL_ICON_SCALING"
 }
