@@ -36,7 +36,7 @@
     <string name="abbrechen">Zatrzymaj - Abbrechen</string>
     <string name="foto_druckt___">Drukowanie zdjęcia… - Foto druckt…</string>
     <string name="foto_wirkilch_loeschen_">Na pewno chcesz usunąć zdjęcie? - Foto wirklich löschen?</string>
-    <string name="moechtest_du_das_foto_wirklich_loeschen__es_wird_dann_nicht_gedruckt_">Czy chcesz usunąć to zdjęcie? Nie będzie można go juz wydrukować. - Möchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.</string>
+    <string name="moechtest_du_das_foto_wirklich_loeschen__es_wird_dann_nicht_gedruckt_">Czy chcesz usunąć to zdjęcie? Nie będzie można go juz wydrukować.\n\nMöchtest du das Foto wirklich löschen? Es wird dann nicht gedruckt.</string>
     <string name="loeschen">Usuń - Löschen</string>
     <string name="ok">OK</string>
     <string name="touch_me_">Naciśnij\nmnie! - Drück\nmich!</string>
@@ -44,16 +44,17 @@
     <string name="touch_me_four_photos">Naciśnij mnie!\n(4 zdjęcia)\n\nDrück mich!\n(4 Fotos)</string>
     <string name="four_photos">4\nzdjęcia! - 4\nFotos!</string>
     <string name="one_photo">1\nzdjęcie! - 1\nFoto!</string>
-    <string name="wir_machen_jetzt_4_fotos_">Teraz zrobimy 4 zdjęcia! - Wir machen jetzt 4 Fotos!</string>
+    <string name="wir_machen_jetzt_4_fotos_">Teraz zrobimy 4 zdjęcia!\nWir machen jetzt 4 Fotos!</string>
     <string name="bitte_fotopapier_nachlegen_">Proszę włóż więcej papieru! - BITTE FOTOPAPIER NACHLEGEN!</string>
-    <string name="druck_dialog_message">Teraz drukuję Twoje zdjęcia :) Nie ciągnij za zdjęcie póki całkowicie nie wypadnie. Zanim zdjęcie będzie gotowe aparat musi je 3 razy wciągnąć i wypuścić. Poczekaj cierpliwie :) W międzyczasie możesz robić nowe zdjęcia.\n\nJeżeli po minucie zdjęcie nie jest gotowe, powiedz Marcie albo Kubie (przystojny chłopak świadkowej ;P )  - Ich drucke dein Foto jetzt. Bitte zieh nicht am Foto, denn bevor ich das Foto am Ende des Druckvorgangs fallen lasse muss ich es drei mal raus- und reinziehen. Der Druck dauert etwa eine Minute. Du kannst aber in der Zwischenzeit schon neue Fotos machen :)\n\n(Falls ich nach einer Minute nichts gedruckt habe bitte Bernd oder Regine melden)</string>
-    <string name="empty_dialog_message">O nie, papier się skończył! Powiedz o tym Marcie albo Kubie (przystojny chłopak świadkowej ;) ) - Oje, ich habe kein Fotopapier mehr :( Bitte bei Bernd oder Regine melden, damit sie Fotopapier nachlegen, dann können wir weitermachen :)</string>
+    <string name="druck_dialog_message">Teraz drukuję Twoje zdjęcia :) Nie ciągnij za zdjęcie póki całkowicie nie wypadnie. Zanim zdjęcie będzie gotowe aparat musi je 3 razy wciągnąć i wypuścić. Poczekaj cierpliwie :) W międzyczasie możesz robić nowe zdjęcia.\n\nJeżeli po minucie zdjęcie nie jest gotowe, powiedz Marcie albo Kubie (przystojny chłopak świadkowej ;P )\n\n\nIch drucke dein Foto jetzt. Bitte zieh nicht am Foto, denn bevor ich das Foto am Ende des Druckvorgangs fallen lasse muss ich es drei mal raus- und reinziehen. Der Druck dauert etwa eine Minute. Du kannst aber in der Zwischenzeit schon neue Fotos machen :)\n\n(Falls ich nach einer Minute nichts gedruckt habe bitte Bernd oder Regine melden)</string>
+    <string name="empty_dialog_message">O nie, papier się skończył! Powiedz o tym Marcie albo Kubie (przystojny chłopak świadkowej ;) )\n\nOje, ich habe kein Fotopapier mehr :( Bitte bei Bernd oder Regine melden, damit sie Fotopapier nachlegen, dann können wir weitermachen :)</string>
     <string name="einstellungen">Ustawienia - Einstellungen</string>
     <string name="foto_in">. zdjęcie za… - . Foto in…</string>
-    <string name="einziges_foto_in">Pojedyncze zdjęcie za… - Einziges Foto in…</string>
+    <string name="xyz_foto_in">%1$d. zdjęcie za…\n\n%1$d. Foto in…</string>
+    <string name="einziges_foto_in">Pojedyncze zdjęcie za…\nEinziges Foto in…</string>
     <string name="noch_xyz_bilder_im_drucker">Jeszcze %1$d blankietów dostępnych w drukarce - Noch %1$d Bilder im Drucker</string>
     <string name="noch_xyz_drucke_in_cartridge">Pozostało tuszu na %1$d drukowań - Noch %1$d Drucke in Cartridge</string>
     <string name="bitte_cartridge_wechseln">Tusz się skończył! - BITTE CARTRIDGE WECHSELN!</string>
-    <string name="wir_machen_jetzt_1_foto">Teraz zrobimy jedno zdjęcie! - Wir machen jetzt 1 Foto!</string>
+    <string name="wir_machen_jetzt_1_foto">Teraz zrobimy jedno zdjęcie!\nWir machen jetzt 1 Foto!</string>
 
 </resources>

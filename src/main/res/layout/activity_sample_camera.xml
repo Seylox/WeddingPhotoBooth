@@ -195,6 +195,7 @@
             android:onClick="onClickTakeFourPicturesButton"
             android:autoSizeTextType="uniform"
             android:padding="45dp"
+            tools:visibility="visible"
             />
 
         <Button

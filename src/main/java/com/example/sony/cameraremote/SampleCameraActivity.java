@@ -615,7 +615,7 @@ public class SampleCameraActivity extends Activity {
                     public void onTick(long millisUntilFinished) {
                         if (secondsRemaining > 5) {
                             centerInformationTextview.setVisibility(View.VISIBLE);
-                            centerInformationTextview.setText(currentPicNumBeingTaken + getString(R.string.foto_in));
+                            centerInformationTextview.setText(getString(R.string.xyz_foto_in, currentPicNumBeingTaken));
                         } else {
                             centerInformationTextview.setText(Integer.toString(secondsRemaining));
                         }
