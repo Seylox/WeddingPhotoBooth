@@ -1082,7 +1082,7 @@ public class SampleCameraActivity extends Activity {
 
     public void onClickSecretMenuButton(View view) {
         secretMenuClicks++;
-        if (secretMenuClicks >= 10) {
+        if (secretMenuClicks >= 5) {
             secretMenuClicks = 0;
             showSecretMenu();
         }
