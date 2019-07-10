@@ -175,24 +175,26 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"
             android:text="@string/touch_me_one_photo"
-            android:textSize="20sp"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:background="@drawable/circular_button_blue"
             android:onClick="onClickTakeOnePictureButton"
+            android:padding="22dp"
+            android:autoSizeTextType="uniform"
             />
 
         <Button
             android:id="@+id/take_four_pictures_button"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
             android:layout_centerInParent="true"
             android:text="@string/touch_me_four_photos"
-            android:textSize="50sp"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:background="@drawable/circular_button_blue"
             android:onClick="onClickTakeFourPicturesButton"
+            android:autoSizeTextType="uniform"
+            android:padding="45dp"
             />
 
         <Button

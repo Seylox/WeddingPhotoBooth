@@ -40,8 +40,8 @@
     <string name="loeschen">Usuń - Löschen</string>
     <string name="ok">OK</string>
     <string name="touch_me_">Naciśnij\nmnie! - Drück\nmich!</string>
-    <string name="touch_me_one_photo">Naciśnij mnie!\n(1 zdjęcie) - Drück mich!\n(1 Foto)</string>
-    <string name="touch_me_four_photos">Naciśnij mnie!\n(4 zdjęcia) - Drück mich!\n(4 Fotos)</string>
+    <string name="touch_me_one_photo">Naciśnij mnie!\n(1 zdjęcie)\n\nDrück mich!\n(1 Foto)</string>
+    <string name="touch_me_four_photos">Naciśnij mnie!\n(4 zdjęcia)\n\nDrück mich!\n(4 Fotos)</string>
     <string name="four_photos">4\nzdjęcia! - 4\nFotos!</string>
     <string name="one_photo">1\nzdjęcie! - 1\nFoto!</string>
     <string name="wir_machen_jetzt_4_fotos_">Teraz zrobimy 4 zdjęcia! - Wir machen jetzt 4 Fotos!</string>
