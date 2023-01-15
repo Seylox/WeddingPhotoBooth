@@ -39,7 +39,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -445,23 +445,6 @@ public class SampleCameraActivity extends Activity {
         Bitmap bitmap3 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(2));
         Bitmap bitmap4 = BitmapFactory.decodeFile(takenPictureFilePathArrayList.get(3));
 
-//        bitmap1 = Bitmap.createScaledBitmap(bitmap1,
-//                bitmap1.getWidth() / 2,
-//                bitmap1.getHeight() / 2,
-//                true);
-//        bitmap2 = Bitmap.createScaledBitmap(bitmap2,
-//                bitmap2.getWidth() / 2,
-//                bitmap2.getHeight() / 2,
-//                true);
-//        bitmap3 = Bitmap.createScaledBitmap(bitmap3,
-//                bitmap3.getWidth() / 2,
-//                bitmap3.getHeight() / 2,
-//                true);
-//        bitmap4 = Bitmap.createScaledBitmap(bitmap4,
-//                bitmap4.getWidth() / 2,
-//                bitmap4.getHeight() / 2,
-//                true);
-
         Bitmap result = Bitmap.createBitmap(bitmap1.getWidth() * 2,
                 bitmap1.getHeight() * 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
@@ -490,45 +473,7 @@ public class SampleCameraActivity extends Activity {
 
         // Add drawable in the middle if option is selected
         if (getDrawHeartInMiddleFromPrefs()) {
-
-            float scalingFactor = getSymbolIconScalingPrefs();
-            Bitmap symbolIcon;
-            // Check if we should use a random symbol or a static one
-            if (getUseRandomSymbolFromPrefs()) {
-                // Getting a random symbol to put in middle
-                int randomNumber = (int)(Math.random() * 45); // random number from 0-44
-                Resources res = getResources();
-                TypedArray icons = res.obtainTypedArray(R.array.emojis_array);
-                symbolIcon = BitmapFactory.decodeResource(getResources(), icons.getResourceId(randomNumber, R.drawable.emoji_1));
-                icons.recycle();
-            } else {
-                // Don't use a random logo, but load one from disk
-                // Loads the Logo (Symbol Icon) from disk, from path /sdcard/Pictures/photoboothicon/logo.png
-                // Best Logo size around 600x600 pixels
-                File picturesDirectory = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES);
-                File iconPath = new File(picturesDirectory, "photoboothicon/logo.png");
-                symbolIcon = BitmapFactory.decodeFile(iconPath.getPath());
-
-                // Uncomment the following to scale down symbol in middle
-                symbolIcon = Bitmap.createScaledBitmap(symbolIcon,
-                        ((int)(symbolIcon.getWidth()*scalingFactor)),
-                        ((int)(symbolIcon.getHeight()*scalingFactor)),
-                        true);
-
-                // Don't use a random symbol but the one specified here
-//                symbolIcon = BitmapFactory.decodeResource(getResources(),
-//                        R.drawable.lisa_markus_hochzeit_300); // for the wedding we used R.drawable.regine_bernd_herz_stronger
-            }
-
-            // TODO: option to configure it from secret menu where to set it
-            // symbol in the middle
-            int symbolLeft = bitmap1.getWidth() - (symbolIcon.getWidth()/2);
-            int symbolTop = bitmap1.getHeight() - (symbolIcon.getHeight()/2);
-            // symbol in bottom right corner
-//            int symbolLeft = (bitmap1.getWidth()*2) - (symbolIcon.getWidth() + (symbolIcon.getWidth()/5));
-//            int symbolTop = (bitmap1.getHeight()*2) - (symbolIcon.getHeight() + (symbolIcon.getHeight()/5));
-            canvas.drawBitmap(symbolIcon, symbolLeft, symbolTop, paint);
+            drawSymbolIconInMiddle(canvas, bitmap1, paint);
         }
 
         // Combine the taken pictures into a collage
@@ -572,6 +517,62 @@ public class SampleCameraActivity extends Activity {
                 startActivityForResult(intent, 12345);
             }
         });
+    }
+
+    /**
+     * Add a drawable in the middle of the 4 pictures
+     * @param canvas Canvas to draw on
+     * @param bitmap1 Top left image for reference
+     * @param paint Paint to draw
+     */
+    private void drawSymbolIconInMiddle(Canvas canvas, Bitmap bitmap1, Paint paint) {
+        float scalingFactor = getSymbolIconScalingPrefs();
+        Bitmap symbolIcon;
+        // Check if we should use a random symbol or a static one
+        if (getUseRandomSymbolFromPrefs()) {
+            // Getting a random symbol to put in middle
+            int randomNumber = (int)(Math.random() * 45); // random number from 0-44
+            Resources res = getResources();
+            TypedArray icons = res.obtainTypedArray(R.array.emojis_array);
+            symbolIcon = BitmapFactory.decodeResource(getResources(), icons.getResourceId(randomNumber, R.drawable.emoji_1));
+            icons.recycle();
+        } else {
+            // Don't use a random logo, but load one from disk
+            // Loads the Logo (Symbol Icon) from disk, from path /sdcard/Pictures/photoboothicon/logo.png
+            // Best Logo size around 600x600 pixels
+            File picturesDirectory = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            File iconPath = new File(picturesDirectory, "photoboothicon/logo.png");
+            symbolIcon = BitmapFactory.decodeFile(iconPath.getPath());
+
+            if (symbolIcon == null) {
+                Toast.makeText(
+                        this,
+                        "Did you set /Pictures/photoboothicon/logo.png? It is not readable and will not be drawn.",
+                        Toast.LENGTH_LONG
+                ).show();
+                return;
+            }
+
+            // Uncomment the following to scale down symbol in middle
+            symbolIcon = Bitmap.createScaledBitmap(symbolIcon,
+                    ((int)(symbolIcon.getWidth()*scalingFactor)),
+                    ((int)(symbolIcon.getHeight()*scalingFactor)),
+                    true);
+
+            // Don't use a random symbol but the one specified here
+//                symbolIcon = BitmapFactory.decodeResource(getResources(),
+//                        R.drawable.lisa_markus_hochzeit_300); // for the wedding we used R.drawable.regine_bernd_herz_stronger
+        }
+
+        // TODO: option to configure it from secret menu where to set it
+        // symbol in the middle
+        int symbolLeft = bitmap1.getWidth() - (symbolIcon.getWidth()/2);
+        int symbolTop = bitmap1.getHeight() - (symbolIcon.getHeight()/2);
+        // symbol in bottom right corner
+//            int symbolLeft = (bitmap1.getWidth()*2) - (symbolIcon.getWidth() + (symbolIcon.getWidth()/5));
+//            int symbolTop = (bitmap1.getHeight()*2) - (symbolIcon.getHeight() + (symbolIcon.getHeight()/5));
+        canvas.drawBitmap(symbolIcon, symbolLeft, symbolTop, paint);
     }
 
     private void updateSinglePhotosButtonVisibility() {

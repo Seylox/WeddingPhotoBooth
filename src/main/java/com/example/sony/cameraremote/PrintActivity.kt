@@ -6,13 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.support.v7.app.AlertDialog
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import com.example.sony.cameraremote.utils.Constants
 import com.example.sony.cameraremote.utils.FileUtils
 import com.squareup.picasso.Picasso
@@ -79,9 +79,9 @@ class PrintActivity : Activity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // collect information from intent extras
-        completeFileName = intent.getStringExtra(EXTRA_COMPLETE_FILENAME)
-        collagesPathName = intent.getStringExtra(EXTRA_COLLAGES_PATHNAME)
-        simpleFileName = intent.getStringExtra(EXTRA_SIMPLE_FILENAME)
+        completeFileName = intent.getStringExtra(EXTRA_COMPLETE_FILENAME).toString()
+        collagesPathName = intent.getStringExtra(EXTRA_COLLAGES_PATHNAME).toString()
+        simpleFileName = intent.getStringExtra(EXTRA_SIMPLE_FILENAME).toString()
 
 //        Timber.d("--- EXTRA_COMPLETE_FILENAME: $completeFileName")
 //        Timber.d("--- EXTRA_COLLAGES_PATHNAME: $collagesPathName")
@@ -162,14 +162,14 @@ class PrintActivity : Activity() {
         // Not leave immersive mode when AlertDialog is shown:
         // https://stackoverflow.com/questions/22794049/how-do-i-maintain-the-immersive-mode-in-dialogs
         //Set the dialog to not focusable (makes navigation ignore us adding the window)
-        alertDialog.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        alertDialog.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         // Show the dialog
         alertDialog.show()
         // Set the dialog to immersive
-        alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+        alertDialog.window?.decorView?.systemUiVisibility = window.decorView.systemUiVisibility
         // Clear the not focusable flag from the window
-        alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
     }
 
     public fun onClickPrintPicturesButton(view: View) {
@@ -206,14 +206,14 @@ class PrintActivity : Activity() {
             // Not leave immersive mode when AlertDialog is shown:
             // https://stackoverflow.com/questions/22794049/how-do-i-maintain-the-immersive-mode-in-dialogs
             //Set the dialog to not focusable (makes navigation ignore us adding the window)
-            alertDialog.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            alertDialog.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
             // Show the dialog
             alertDialog.show()
             // Set the dialog to immersive
-            alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+            alertDialog.window?.decorView?.systemUiVisibility = window.decorView.systemUiVisibility
             // Clear the not focusable flag from the window
-            alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         }
     }
 
@@ -228,14 +228,14 @@ class PrintActivity : Activity() {
         // Not leave immersive mode when AlertDialog is shown:
         // https://stackoverflow.com/questions/22794049/how-do-i-maintain-the-immersive-mode-in-dialogs
         //Set the dialog to not focusable (makes navigation ignore us adding the window)
-        alertDialog.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        alertDialog.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         // Show the dialog
         alertDialog.show()
         // Set the dialog to immersive
-        alertDialog.window.decorView.systemUiVisibility = window.decorView.systemUiVisibility
+        alertDialog.window?.decorView?.systemUiVisibility = window.decorView.systemUiVisibility
         // Clear the not focusable flag from the window
-        alertDialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
     }
 
     private fun showSetPhotosPrintsDialog() {
